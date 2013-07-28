@@ -1,6 +1,7 @@
 CREATE TABLE Item
 (
 	upc 	CHAR(4) not null PRIMARY KEY,
+--	upc	NUMERIC(4,0)
 	title	VARCHAR(50) not null,
 	type	ENUM('CD', 'DVD') not null,
 	category ENUM(	'rock', 'pop', 'rap', 'country', 
@@ -19,7 +20,6 @@ CREATE TABLE LeadSinger
 	PRIMARY KEY(upc, name),
 	FOREIGN KEY (upc) REFERENCES Item
 		ON DELETE CASCADE 
-		ON UPDATE CASCADE
 );
 
 CREATE TABLE HasSong
@@ -30,7 +30,6 @@ CREATE TABLE HasSong
 	PRIMARY KEY (upc, title),
 	FOREIGN KEY (upc) REFERENCES Item
 		ON DELETE CASCADE
-		ON UPDATE CASCADE
 );
 
 CREATE TABLE Purchase
@@ -44,8 +43,7 @@ CREATE TABLE Purchase
 	deliveredDate	DATE,
 
 	FOREIGN KEY (cid) REFERENCES Customer
-		ON DELETE SET DEFAULT
-		ON UPDATE CASCADE
+		ON DELETE SET NULL
 );
 
 CREATE TABLE PurchaseItem
@@ -56,20 +54,18 @@ CREATE TABLE PurchaseItem
 
 	PRIMARY KEY (receiptId, upc),
 	FOREIGN KEY (receiptId) REFERENCES Purchase,
-		ON DELETE SET DEFAULT --TODO: set default vs no action?
-		ON UPDATE CASCADE
+		ON DELETE NO ACTION 
 	FOREIGN KEY (upc) 	REFERENCES Item
-		ON DELETE SET DEFAULT --TODO: default vs null?
-		ON UPDATE CASCADE
+		ON DELETE NO ACTION 
 );
 
 CREATE TABLE Customer
 (
 	cid		CHAR(16) not null PRIMARY KEY,
 	pswd		VARCHAR(25) not null,
-	name		VARCHAR(50) not null,
+	name		VARCHAR(20) not null,
 	address		VARCHAR(50) not null,
-	phone		CHAR(10) not null,
+	phone		CHAR(20) not null,
 );
 
 CREATE TABLE Return
@@ -80,7 +76,6 @@ CREATE TABLE Return
 
 	FOREIGN KEY (receiptId) REFERENCES Purchase
 		ON DELETE NO ACTION
-		ON UPDATE CASCADE
 );
 
 CREATE TABLE ReturnItem
@@ -91,9 +86,7 @@ CREATE TABLE ReturnItem
 
 	PRIMARY KEY (retid, upc),
 	FOREIGN KEY (retid) REFERENCES Return,
-		ON DELETE SET DEFAULT 
-		ON UPDATE CASCADE
+		ON DELETE NO ACTION
 	FOREIGN KEY (upc) REFERENCES Item
-		ON DELETE SET DEFAULT
-		ON UPDATE CASCADE
+		ON DELETE NO ACTION
 );
