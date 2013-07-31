@@ -34,7 +34,7 @@ CREATE TABLE HasSong
 
 CREATE TABLE Purchase
 (
-	receiptId	CHAR(30) not null PRIMARY KEY,
+	receiptId	CHAR(10) not null PRIMARY KEY,
 	pDate		DATE not null,
 	cid		CHAR(16),
 	cardNum		CHAR(16),
@@ -48,7 +48,7 @@ CREATE TABLE Purchase
 
 CREATE TABLE PurchaseItem
 (
-	receiptId	CHAR(30) not null,
+	receiptId	CHAR(10) not null,
 	upc		CHAR(4) not null,
 	quantity	SMALLINT not null,
 
@@ -72,7 +72,7 @@ CREATE TABLE Return
 (
 	retid		CHAR(30) not null PRIMARY KEY,
 	rDate		DATE not null,
-	receiptId	CHAR(30) not null,
+	receiptId	CHAR(10) not null,
 
 	FOREIGN KEY (receiptId) REFERENCES Purchase
 		ON DELETE NO ACTION
