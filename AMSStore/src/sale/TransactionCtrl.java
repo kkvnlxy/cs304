@@ -1,7 +1,7 @@
 package sale;
 
 import java.util.GregorianCalendar;
-
+import java.util.HashMap;
 import entity.Item;
 
 public abstract class TransactionCtrl 
@@ -10,6 +10,6 @@ public abstract class TransactionCtrl
 	public abstract Receipt process(String card_num, GregorianCalendar exp_date);
 	public abstract void cancel();
 	
-	private HashtMap<Item, int> items;
+	private HashMap<Item, Integer> items;
 	private JDBCConnection conn;
 }
