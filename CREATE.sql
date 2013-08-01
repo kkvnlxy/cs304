@@ -68,7 +68,7 @@ CREATE TABLE Customer
 	phone		CHAR(20) not null,
 );
 
-CREATE TABLE Return
+CREATE TABLE Refund
 (
 	retid		CHAR(30) not null PRIMARY KEY,
 	rDate		DATE not null,
