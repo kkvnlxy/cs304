@@ -2,7 +2,6 @@ package sale;
 
 import java.util.GregorianCalendar;
 import java.util.HashMap;
-import entity.Item;
 
 public abstract class TransactionCtrl 
 {

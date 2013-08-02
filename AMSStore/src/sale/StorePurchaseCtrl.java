@@ -3,7 +3,6 @@ package sale;
 import java.util.GregorianCalendar;
 
 
-import entity.Item;
 
 public class StorePurchaseCtrl extends TransactionCtrl
 {

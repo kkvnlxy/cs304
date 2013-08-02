@@ -50,7 +50,7 @@ public class Purchase extends Receipt
 	{
 		return this.del_date.toString();
 	}
-	
+
 	private final String cust_id;
 	private final String card_num;
 	private final GregorianCalendar exp_date;

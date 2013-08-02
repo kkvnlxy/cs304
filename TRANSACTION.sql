@@ -39,11 +39,16 @@ WHERE upc = upc_input;
 INSERT INTO Customer VALUES (cid_input, pswd_input, name_input, address_input, phone_input);
 
 -- online purchase
-INSERT INTO Purchase VALUES(receiptId_gen, pDate_gen, cid_input, cardNum_input, expiryDate_input, expectedDate_gen, deliveredDate = null); --TODO: how do we calculate/generate the pDate and expectedDate
+INSERT INTO Purchase VALUES(receiptId_gen, pDate_gen, cid_input, cardNum_input, expiryDate_input, expectedDate_gen, deliveredDate = null); 
+--TODO: how do we calculate/generate the pDate
+--go thru Purchase table where cid != null, and deliverDate == null, then count number of tuples, label as OUTSTANDING_ORDER, DAILY_MAX = 5
+--OUTSTAND/DAILY_MAX + today_input = expectedDate
 INSERT INTO PurchaseItem VALUES (receiptId_input, upc_input, quantity_input);
 UPDATE Item
 SET Item.stock = Item.stock - quantity_input
 WHERE Item.upc = upc_input;
+--Kevin: select the Customer tuple with given c_id TODO
+
 
 ---------------------------------------------------------------
 -- Manager:
