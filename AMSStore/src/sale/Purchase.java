@@ -10,9 +10,9 @@ import java.util.GregorianCalendar;
  */
 public class Purchase extends Receipt
 {
-	protected Purchase(String r_id, GregorianCalendar pur_date, String c_id, 
-					String card_num, GregorianCalendar exp_date, 
-					GregorianCalendar del_date)
+	protected Purchase(	String r_id, GregorianCalendar pur_date, String c_id, 
+						String card_num, GregorianCalendar exp_date, 
+						GregorianCalendar del_date)
 	{
 		super(r_id, pur_date);
 		this.cust_id = c_id;

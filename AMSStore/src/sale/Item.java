@@ -6,7 +6,6 @@ public class Item
 					String comp, String year, int price)
 	{
 		this.upc = upc;
-		...
 	}
 	
 	/*
