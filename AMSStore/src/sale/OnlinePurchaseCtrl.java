@@ -8,6 +8,11 @@ import register.Customer;
 
 public class OnlinePurchaseCtrl extends TransactionCtrl 
 {
+//	public OnlinePurchaseCtrl(String cid)
+//	{
+//		this.cid = cid;
+//	}
+	
 	@Override
 	public Item addItem(String upc)
 			throws SQLException
@@ -47,4 +52,5 @@ public class OnlinePurchaseCtrl extends TransactionCtrl
 	}
 	
 	private Customer cur_cust;
+//	private String cid;
 }
