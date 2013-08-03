@@ -15,10 +15,10 @@ public class Purchase extends Receipt
 						GregorianCalendar del_date)
 	{
 		super(r_id, pur_date);
-		this.cust_id = c_id;
-		this.card_num = card_num;
-		this.exp_date = exp_date;
-		this.del_date = del_date;
+		this.CUST_ID = c_id;
+		this.CARD_NUM = card_num;
+		this.EXP_DATE = exp_date;
+		this.DEL_DATE = del_date;
 	}
 	
 	/*
@@ -28,31 +28,31 @@ public class Purchase extends Receipt
 	 */
 	final public String getCustId()
 	{
-		return this.cust_id;
+		return this.CUST_ID;
 	}
 	final public String getCardNum()
 	{
-		return this.card_num;
+		return this.CARD_NUM;
 	}
 	final public GregorianCalendar getExpDate()
 	{
-		return this.exp_date;
+		return this.EXP_DATE;
 	}
 	final public String getExpDateString()
 	{
-		return this.exp_date.toString();
+		return this.EXP_DATE.toString();
 	}
 	final public GregorianCalendar getDelDate()
 	{
-		return this.del_date;
+		return this.DEL_DATE;
 	}
 	final public String getDelDateString()
 	{
-		return this.del_date.toString();
+		return this.DEL_DATE.toString();
 	}
 
-	private final String cust_id;
-	private final String card_num;
-	private final GregorianCalendar exp_date;
-	private final GregorianCalendar del_date;
+	private final String CUST_ID;
+	private final String CARD_NUM;
+	private final GregorianCalendar EXP_DATE;
+	private final GregorianCalendar DEL_DATE;
 }

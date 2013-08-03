@@ -5,7 +5,13 @@ public class Item
 	protected Item(	String upc, String title, ITEM_TYPE type, GENRE category,
 					String comp, String year, int price)
 	{
-		this.upc = upc;
+		this.UPC = upc;
+		this.TITLE = title;
+		this.TYPE = type;
+		this.CATEGORY = category;
+		this.COMPANY = comp;
+		this.YEAR = year;
+		this.PRICE_IN_CENT = price;
 	}
 	
 	/*
@@ -15,13 +21,13 @@ public class Item
 	 */
 	
 	
-	final private String upc;
-	final private String title;
-	final private ITEM_TYPE type;
-	final private GENRE category;
-	final private String company;
-	final private String year; // or GregorianCalendar?
-	final private int price_in_cent; // int vs double
+	final private String UPC;
+	final private String TITLE;
+	final private ITEM_TYPE TYPE;
+	final private GENRE CATEGORY;
+	final private String COMPANY;
+	final private String YEAR; // or GregorianCalendar?
+	final private int PRICE_IN_CENT; // int vs double
 	
 	public static enum ITEM_TYPE
 	{

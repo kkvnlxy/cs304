@@ -5,20 +5,26 @@ import java.util.GregorianCalendar;
 
 public class StorePurchaseCtrl extends TransactionCtrl
 {
+	/*
+	 **********************************************
+	 * inheriting abstract methods:
+	 **********************************************
+	 */
+	@Override
 	public Item addItem(String upc) 
 			throws SQLException
 	{
 		// TODO Auto-generated method stub
 		return null;
 	}
-
+	@Override
 	public Receipt process(String card_num, GregorianCalendar exp_date) 
 			throws SQLException
 	{
 		// TODO Auto-generated method stub
 		return null;
 	}
-
+	@Override
 	public void cancel() 
 	{
 		// TODO Auto-generated method stub

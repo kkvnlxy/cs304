@@ -3,6 +3,7 @@ package sale;
 import java.sql.SQLException;
 import java.util.GregorianCalendar;
 
+import register.AuthenCtrl;
 import register.AuthenException;
 import register.Customer;
 
@@ -13,6 +14,11 @@ public class OnlinePurchaseCtrl extends TransactionCtrl
 //		this.cid = cid;
 //	}
 	
+	/*
+	 **********************************************
+	 * inheriting abstract methods:
+	 **********************************************
+	 */
 	@Override
 	public Item addItem(String upc)
 			throws SQLException
@@ -20,7 +26,6 @@ public class OnlinePurchaseCtrl extends TransactionCtrl
 		// TODO Auto-generated method stub
 		return null;
 	}
-
 	@Override
 	public Receipt process(String card_num, GregorianCalendar exp_date)
 			throws SQLException
@@ -28,7 +33,6 @@ public class OnlinePurchaseCtrl extends TransactionCtrl
 		// TODO Auto-generated method stub
 		return null;
 	}
-
 	@Override
 	public void cancel() 
 	{
@@ -45,10 +49,18 @@ public class OnlinePurchaseCtrl extends TransactionCtrl
 	 * @post this.cur_cust will be set
 	 * @throw AuthenException if the password does not match cust_id
 	 */
-	private void authen(String cust_id, String password)
-			throws AuthenException
+	private void authen(String cid, String pswd)
+			throws SQLException, AuthenException
 	{
-		
+		try
+		{
+			cur_cust = new AuthenCtrl(cid, pswd).authen();
+		}
+		catch(Exception expt)
+		{
+			cur_cust = null; //sanity operation
+			throw expt;
+		}
 	}
 	
 	private Customer cur_cust;

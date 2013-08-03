@@ -11,10 +11,10 @@ public class Customer
 	 */
 	protected Customer(String c_id, String name, String adr, String phone)
 	{
-		this.cust_id = c_id;
-		this.name = name;
-		this.adr = adr;
-		this.phone = phone;
+		this.CUST_ID = c_id;
+		this.NAME = name;
+		this.ADR = adr;
+		this.PHONE = phone;
 	}
 	
 	/*
@@ -23,8 +23,9 @@ public class Customer
 	 *******************************************
 	 */
 	
-	final private String cust_id;
-	final private String name;
-	final private String adr;
-	final private String phone;
+	final private String CUST_ID;
+	final private String NAME;
+	final private String ADR;
+	final private String PHONE;
+	// pswd is not present because we don't need it
 }

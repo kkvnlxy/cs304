@@ -5,6 +5,11 @@ import java.util.GregorianCalendar;
 
 public class RefundCtrl extends TransactionCtrl 
 {
+	/*
+	 **********************************************
+	 * inheriting abstract methods:
+	 **********************************************
+	 */
 	@Override
 	public Item addItem(String upc)
 			throws SQLException
@@ -38,7 +43,8 @@ public class RefundCtrl extends TransactionCtrl
 	 */
 	public boolean verify(String rid)
 	{
-		
+		// TODO not yet implement
+		return false;
 	}
 
 	private boolean status; //within 15 days?

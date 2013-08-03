@@ -1,8 +1,11 @@
 package sale;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+
+import util.JDBCConnection;
 
 /**
  * Abstract class that all control object in this package should inherit.
@@ -37,5 +40,5 @@ public abstract class TransactionCtrl
 	public abstract void cancel();
 	
 	private HashMap<Item, Integer> items;
-	private JDBCConnection conn;
+	private Connection conn;
 }

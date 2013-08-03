@@ -8,7 +8,7 @@ public class Return extends Receipt
 	protected Return(String rcpt_id, GregorianCalendar ref_date, String ref_id)
 	{
 		super(rcpt_id, ref_date);
-		this.ref_id = ref_id;
+		this.REF_ID = ref_id;
 	}
 	
 	/*
@@ -17,5 +17,5 @@ public class Return extends Receipt
 	 ****************************************** 
 	 */
 	
-	final private String ref_id;
+	final private String REF_ID;
 }

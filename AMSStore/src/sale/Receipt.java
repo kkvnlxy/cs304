@@ -13,8 +13,8 @@ public class Receipt
 {
 	protected Receipt(String r_id, GregorianCalendar date)
 	{
-		this.rcpt_id = r_id;
-		this.trans_date = date;
+		this.RCPT_ID = r_id;
+		this.TRANS_DATE = date;
 	}
 	
 	/*
@@ -24,17 +24,17 @@ public class Receipt
 	 */
 	final public String getRcptId()
 	{
-		return this.rcpt_id;
+		return this.RCPT_ID;
 	}
 	final public String getDateString()
 	{
-		return trans_date.toString();
+		return TRANS_DATE.toString();
 	}
 	final public GregorianCalendar getDate()
 	{
-		return this.trans_date;
+		return this.TRANS_DATE;
 	}
 	
-	private final String rcpt_id;
-	private final GregorianCalendar trans_date;
+	private final String RCPT_ID;
+	private final GregorianCalendar TRANS_DATE;
 }
