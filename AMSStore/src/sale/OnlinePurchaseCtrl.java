@@ -1,5 +1,7 @@
 package sale;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.GregorianCalendar;
 
@@ -46,21 +48,19 @@ public class OnlinePurchaseCtrl extends TransactionCtrl
 	 * the password match the cust_id provided
 	 * @param cust_id the customer id
 	 * @param password the password
+	 * @throws IOException 
+	 * @throws FileNotFoundException 
+	 * @throws ClassNotFoundException 
 	 * @post this.cur_cust will be set
 	 * @throw AuthenException if the password does not match cust_id
+	 * @throw SQLException if given cid is not found in the database
 	 */
 	private void authen(String cid, String pswd)
-			throws SQLException, AuthenException
+			throws SQLException, AuthenException, ClassNotFoundException, 
+					FileNotFoundException, IOException
 	{
-		try
-		{
-			cur_cust = new AuthenCtrl(cid, pswd).authen();
-		}
-		catch(Exception expt)
-		{
-			cur_cust = null; //sanity operation
-			throw expt;
-		}
+		cur_cust = new AuthenCtrl(cid, pswd).authenticate();
+		//TODO need further operation??
 	}
 	
 	private Customer cur_cust;

@@ -11,9 +11,9 @@ public class Customer
 	 */
 	protected Customer(String c_id, String name, String adr, String phone)
 	{
-		this.CUST_ID = c_id;
+		this.CID = c_id;
 		this.NAME = name;
-		this.ADR = adr;
+		this.ADDRESS = adr;
 		this.PHONE = phone;
 	}
 	
@@ -23,9 +23,18 @@ public class Customer
 	 *******************************************
 	 */
 	
-	final private String CUST_ID;
+	final private String CID;
+	//pswd is not present because we don't need it
 	final private String NAME;
-	final private String ADR;
+	final private String ADDRESS;
 	final private String PHONE;
-	// pswd is not present because we don't need it
+	
+	//static field for ResultSet indexing of Customer tuple.
+	//USE THESE INDEXES ONLY WHEN "SELECT *"
+	final static protected int CID_IND = 1;
+	final static protected int PSWD_IND = 2;
+	final static protected int NAME_IND = 2;
+	final static protected int ADRRESS_IND = 2;
+	final static protected int PHONE_IND = 2;
 }
+

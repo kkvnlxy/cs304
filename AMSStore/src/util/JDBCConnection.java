@@ -12,7 +12,7 @@ public class JDBCConnection
 {
 	/**
 	 * Initialization for this singleton class
-	 * This constructor is going to throw 3 kinds of exceptions; however, one 
+	 * This constructor is going to throw 4 kinds of exceptions; however, one 
 	 * of them inherits another. Therefore, to give meaningful error message, 
 	 * please catch exceptions carefully.
 	 * @throws FileNotFoundException if the config file is missing
@@ -56,6 +56,14 @@ public class JDBCConnection
 		connection = DriverManager.getConnection(url, user, pswd);
 	}
 	
+	/**
+	 * The only access point of this singleton class. Our database can only 
+	 * afford 1 connection (even only among all sessions).
+	 * @return a reference of sql.Connection that is connected to our database
+	 * @throws IOException
+	 * @throws SQLException
+	 * @throws ClassNotFoundException
+	 */
 	public static Connection getConnection() 
 			throws IOException, SQLException, ClassNotFoundException
 	{
