@@ -1,0 +1,4 @@
+jdbc.url=jdbc:oracle:thin:@dbhost.ugrad.cs.ubc.ca:1522:ug
+jdbc.driver=oracle.jdbc.driver.OracleDriver
+jdbc.username=ora_p4o8
+jdbc.password=a11304128
