@@ -37,4 +37,9 @@ public class Receipt
 	
 	private final String RCPT_ID;
 	private final GregorianCalendar TRANS_DATE;
+	
+	public static enum PAYMENT_METHOD
+	{
+		CASH, CREDIT_CARD
+	};
 }

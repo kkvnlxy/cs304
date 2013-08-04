@@ -124,6 +124,13 @@ public class Purchase extends Receipt
 	{
 		return this.DEL_DATE.toString();
 	}
+	final public PAYMENT_METHOD getPaymentMethod()
+	{
+		if(this.CARD_NUM == null && this.EXPR_DATE == null)
+			return PAYMENT_METHOD.CASH;
+		else
+			return PAYMENT_METHOD.CREDIT_CARD;
+	}
 
 	private final String CUST_ID;
 	private final String CARD_NUM;

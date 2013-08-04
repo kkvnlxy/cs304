@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
+import sale.Receipt.PAYMENT_METHOD;
 import util.JDBCConnection;
 
 public class RefundCtrl extends TransactionCtrl 
@@ -21,6 +22,7 @@ public class RefundCtrl extends TransactionCtrl
 	 * @throws IOException configuration file parsing error or cannot be found
 	 * @throws ClassNotFoundException database drive cannot be found in the 
 	 * 								  system
+	 * @author kevin
 	 */
 	public RefundCtrl(String pur_id) 
 			throws ClassNotFoundException, IOException, SQLException
@@ -115,7 +117,15 @@ public class RefundCtrl extends TransactionCtrl
 	{
 		return this.status;
 	}
-
+	/**
+	 * This method returns the payment method of the current purchase
+	 * @return
+	 */
+	public PAYMENT_METHOD getPaymentMethod()
+	{
+		return this.purc.getPaymentMethod();
+	}
+	
 	/**
 	 * This is a helper method to check whether the purc.purdate is 15 within
 	 * from today.
@@ -128,7 +138,6 @@ public class RefundCtrl extends TransactionCtrl
 		
 		this.status = deadline.compareTo(Calendar.getInstance()) >= 0;
 	}
-
 	/**
 	 * This is a helper method. You may get a lot of warning from this method,
 	 * because the getter methods from sql.Date which inherits java.util.Date's
