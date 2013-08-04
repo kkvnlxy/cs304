@@ -9,3 +9,4 @@ Wenlin Wei::37354115::z0e8::angelawei25@gmail.com
 
 NOTE:
 1. two report entity class probably need to be iterable
+2. can do top less than 5 items on demo
