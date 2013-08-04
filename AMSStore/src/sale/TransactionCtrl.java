@@ -38,53 +38,60 @@ public abstract class TransactionCtrl
 										"SELECT * " +
 										"FROM Item" +
 										"WHERE upc = " + upc);
-		ResultSet result = stmt.executeQuery(); 
-		if(result.next())
-		//expecting only 1 tuple is returned
+		try
 		{
-			String the_upc = result.getString(Item.UPC_IND);
-			
-			String title = result.getString(Item.TITLE_IND);
-			
-			String type_str = result.getString(Item.TYPE_IND);
-			ITEM_TYPE type = null;
-			if(type_str.equals(Item.TYPE_CD))
-				type = ITEM_TYPE.CD;
+			ResultSet result = stmt.executeQuery(); 
+			if(result.next())
+			//expecting only 1 tuple is returned
+			{
+				String the_upc = result.getString(Item.UPC_IND);
+				
+				String title = result.getString(Item.TITLE_IND);
+				
+				String type_str = result.getString(Item.TYPE_IND);
+				ITEM_TYPE type = null;
+				if(type_str.equals(Item.TYPE_CD))
+					type = ITEM_TYPE.CD;
+				else
+					type = ITEM_TYPE.DVD;
+				
+				String cat_str = result.getString(Item.CATEGORY_IND);
+				GENRE category = null;
+				if(cat_str.equals(Item.GENRE_CLASSICAL))
+					category = GENRE.CLASSICAL;
+				else if(cat_str.equals(Item.GENRE_COUNTRY))
+					category = GENRE.COUNTRY;
+				else if(cat_str.equals(Item.GENRE_INST))
+					category = GENRE.INSTRUMENTAL;
+				else if(cat_str.equals(Item.GENRE_NEW_AGE))
+					category = GENRE.NEW_AGE;
+				else if(cat_str.equals(Item.GENRE_POP))
+					category = GENRE.POP;
+				else if(cat_str.equals(Item.GENRE_RAP))
+					category = GENRE.RAP;
+				else
+					category = GENRE.ROCK;
+				
+				String company = result.getString(Item.COMPANY_IND);
+				
+				String year = result.getString(Item.YEAR_IND);
+				
+				int price = (int)result.getDouble(Item.PRICE_IND) * 100;
+				
+				//adding this item item to the cart and returns it
+				Item item = new Item(the_upc, title, type, category, company, year, 
+								 	 price);
+				items.put(item, new Integer(qty));
+				return item;
+			}
 			else
-				type = ITEM_TYPE.DVD;
-			
-			String cat_str = result.getString(Item.CATEGORY_IND);
-			GENRE category = null;
-			if(cat_str.equals(Item.GENRE_CLASSICAL))
-				category = GENRE.CLASSICAL;
-			else if(cat_str.equals(Item.GENRE_COUNTRY))
-				category = GENRE.COUNTRY;
-			else if(cat_str.equals(Item.GENRE_INST))
-				category = GENRE.INSTRUMENTAL;
-			else if(cat_str.equals(Item.GENRE_NEW_AGE))
-				category = GENRE.NEW_AGE;
-			else if(cat_str.equals(Item.GENRE_POP))
-				category = GENRE.POP;
-			else if(cat_str.equals(Item.GENRE_RAP))
-				category = GENRE.RAP;
-			else
-				category = GENRE.ROCK;
-			
-			String company = result.getString(Item.COMPANY_IND);
-			
-			String year = result.getString(Item.YEAR_IND);
-			
-			int price = (int)result.getDouble(Item.PRICE_IND) * 100;
-			
-			//adding this item item to the cart and returns it
-			Item item = new Item(the_upc, title, type, category, company, year, 
-								 price);
-			items.put(item, new Integer(qty));
-			return item;
+			//item with the specified upc is not found
+				throw new SQLException("Item with upc " + upc + "cannot be found.");
 		}
-		else
-		//item with the specified upc is not found
-			throw new SQLException("Item with upc " + upc + "cannot be found.");
+		finally
+		{
+			stmt.close();
+		}
 	}
 	
 	/**

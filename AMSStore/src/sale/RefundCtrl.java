@@ -34,40 +34,47 @@ public class RefundCtrl extends TransactionCtrl
 									"SELECT * " +
 									"FROM Purchase" +
 									"WHERE receiptId = " + pur_id);
-		ResultSet result = stmt.executeQuery();
-		
-		if(result.next())
-		//expecting one tuple
+		try
 		{
-			String rcpt_id = result.getString(Purchase.RID_IND);
+			ResultSet result = stmt.executeQuery();
 			
-			GregorianCalendar pur_date = convert(result.getDate(
-														   Purchase.PDATE_IND));
-			
-			String cid = result.getString(Purchase.CID_IND);
-			
-			String card_num = result.getString(Purchase.CARDNUM_IND);
-			
-			GregorianCalendar expr_date = convert(result.getDate(
+			if(result.next())
+			//expecting one tuple
+			{
+				String rcpt_id = result.getString(Purchase.RID_IND);
+				
+				GregorianCalendar pur_date = convert(result.getDate(
+			   										   	   Purchase.PDATE_IND));
+				
+				String cid = result.getString(Purchase.CID_IND);
+				
+				String card_num = result.getString(Purchase.CARDNUM_IND);
+				
+				GregorianCalendar expr_date = convert(result.getDate(
 														Purchase.EXPRDATE_IND));
 			
-			GregorianCalendar expt_date = convert(result.getDate(
+				GregorianCalendar expt_date = convert(result.getDate(
 														Purchase.EXPTDATE_IND));
 			
-			GregorianCalendar del_date = convert(result.getDate(
+				GregorianCalendar del_date = convert(result.getDate(
 														 Purchase.DELDATE_IND));
 			
-			//keep track of the purchase in the instance fields:
-			this.purc = new Purchase(rcpt_id, pur_date, cid, card_num, 
-									 expr_date, expt_date, del_date);
-			verify();
+				//keep track of the purchase in the instance fields:
+				this.purc = new Purchase(rcpt_id, pur_date, cid, card_num, 
+									 	 expr_date, expt_date, del_date);
+				verify();
+			}
+			else
+			//purchase cannot be found
+			{
+				this.purc = null;
+				this.status = false;
+				throw new SQLException("Receipt ID cannot be found.");
+			}
 		}
-		else
-		//purchase cannot be found
+		finally
 		{
-			this.purc = null;
-			this.status = false;
-			throw new SQLException("Receipt ID cannot be found.");
+			stmt.close();
 		}
 	}
 	
