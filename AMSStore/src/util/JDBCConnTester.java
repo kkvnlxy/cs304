@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 public class JDBCConnTester 
 {
@@ -19,8 +20,11 @@ public class JDBCConnTester
 		{
 			conn = JDBCConnection.getConnection();
 			
-			String command = "DROP TABLE Publishers";
-			conn.createStatement().execute(command);
+			String command = "INSERT INTO Customer VALUES('ang', '2234', 'Angela Wei', 'Richmond', '778-213-1245')";
+			System.out.println(command);
+			Statement stmt = conn.createStatement();
+			stmt.execute(command);
+			stmt.close();
 		}
 		catch(FileNotFoundException expt)
 		{
