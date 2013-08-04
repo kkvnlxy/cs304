@@ -22,13 +22,6 @@ public class OnlinePurchaseCtrl extends TransactionCtrl
 	 **********************************************
 	 */
 	@Override
-	public Item addItem(String upc)
-			throws SQLException
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-	@Override
 	public Receipt process(String card_num, GregorianCalendar exp_date)
 			throws SQLException
 	{
@@ -38,8 +31,8 @@ public class OnlinePurchaseCtrl extends TransactionCtrl
 	@Override
 	public void cancel() 
 	{
-		// TODO Auto-generated method stub
-
+		this.cur_cust = null;
+		this.items.clear();
 	}
 	
 	/**
@@ -55,7 +48,7 @@ public class OnlinePurchaseCtrl extends TransactionCtrl
 	 * @throw AuthenException if the password does not match cust_id
 	 * @throw SQLException if given cid is not found in the database
 	 */
-	private void authen(String cid, String pswd)
+	public void authen(String cid, String pswd)
 			throws SQLException, AuthenException, ClassNotFoundException, 
 					FileNotFoundException, IOException
 	{

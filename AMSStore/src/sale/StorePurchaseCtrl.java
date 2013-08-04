@@ -11,24 +11,20 @@ public class StorePurchaseCtrl extends TransactionCtrl
 	 **********************************************
 	 */
 	@Override
-	public Item addItem(String upc) 
-			throws SQLException
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-	@Override
 	public Receipt process(String card_num, GregorianCalendar exp_date) 
 			throws SQLException
 	{
 		// TODO Auto-generated method stub
 		return null;
 	}
+	/**
+	 * @author kevin
+	 */
 	@Override
 	public void cancel() 
 	{
-		// TODO Auto-generated method stub
-
+		this.cur_rcpt_id = null;
+		this.items.clear();
 	}
 	
 	/**
@@ -36,10 +32,10 @@ public class StorePurchaseCtrl extends TransactionCtrl
 	 * May not be needed
 	 * @post set this.cur_rcpt_id
 	 */
-	private void getLastestRcptId()
-	{
-		
-	}
+//	private void getLastestRcptId()
+//	{
+//		
+//	}
 
 	
 	private String cur_rcpt_id;	//the receipt id currently is processing, 

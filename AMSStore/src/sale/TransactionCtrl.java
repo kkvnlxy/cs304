@@ -1,10 +1,15 @@
 package sale;
 
+import java.io.IOException;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 
+import sale.Item.GENRE;
+import sale.Item.ITEM_TYPE;
 import util.JDBCConnection;
 
 /**
@@ -17,11 +22,70 @@ public abstract class TransactionCtrl
 	/**
 	 * Add an Item object to the items, which require to go to the Item table
 	 * @param upc the upc going to be added
+	 * @param qty the number of the same item to be added
 	 * @return the "entity" object Item represented by the upc
 	 * @throws SQLException there is no tuple in the Item table with that upc
+	 * @throws IOException if configuration file parsing error
+	 * @throws ClassNotFoundException database driver cannot be found
 	 */
-	public abstract Item addItem(String upc) 
-			throws SQLException;
+	public Item addItem(String upc, int qty) 
+			throws SQLException, ClassNotFoundException, IOException
+	{
+		if(this.conn == null)
+			this.conn = JDBCConnection.getConnection();
+		
+		PreparedStatement stmt = conn.prepareStatement(
+										"SELECT * " +
+										"FROM Item" +
+										"WHERE upc = " + upc);
+		ResultSet result = stmt.executeQuery(); 
+		if(result.next())
+		//expecting only 1 tuple is returned
+		{
+			String the_upc = result.getString(Item.UPC_IND);
+			
+			String title = result.getString(Item.TITLE_IND);
+			
+			String type_str = result.getString(Item.TYPE_IND);
+			ITEM_TYPE type = null;
+			if(type_str.equals(Item.TYPE_CD))
+				type = ITEM_TYPE.CD;
+			else
+				type = ITEM_TYPE.DVD;
+			
+			String cat_str = result.getString(Item.CATEGORY_IND);
+			GENRE category = null;
+			if(cat_str.equals(Item.GENRE_CLASSICAL))
+				category = GENRE.CLASSICAL;
+			else if(cat_str.equals(Item.GENRE_COUNTRY))
+				category = GENRE.COUNTRY;
+			else if(cat_str.equals(Item.GENRE_INST))
+				category = GENRE.INSTRUMENTAL;
+			else if(cat_str.equals(Item.GENRE_NEW_AGE))
+				category = GENRE.NEW_AGE;
+			else if(cat_str.equals(Item.GENRE_POP))
+				category = GENRE.POP;
+			else if(cat_str.equals(Item.GENRE_RAP))
+				category = GENRE.RAP;
+			else
+				category = GENRE.ROCK;
+			
+			String company = result.getString(Item.COMPANY_IND);
+			
+			String year = result.getString(Item.YEAR_IND);
+			
+			int price = (int)result.getDouble(Item.PRICE_IND) * 100;
+			
+			//adding this item item to the cart and returns it
+			Item item = new Item(the_upc, title, type, category, company, year, 
+								 price);
+			items.put(item, new Integer(qty));
+			return item;
+		}
+		else
+		//item with the specified upc is not found
+			throw new SQLException("Item with upc " + upc + "cannot be found.");
+	}
 	
 	/**
 	 * Methods that tells the database the update/insert relevant tables
@@ -39,6 +103,6 @@ public abstract class TransactionCtrl
 	 */
 	public abstract void cancel();
 	
-	private HashMap<Item, Integer> items;
-	private Connection conn;
+	protected HashMap<Item, Integer> items;
+	protected Connection conn;
 }
