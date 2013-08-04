@@ -26,11 +26,11 @@ public class Receipt
 	{
 		return this.RCPT_ID;
 	}
-	final public String getDateString()
+	final public String getPDateString()
 	{
 		return TRANS_DATE.toString();
 	}
-	final public GregorianCalendar getDate()
+	final public GregorianCalendar getPDate()
 	{
 		return this.TRANS_DATE;
 	}

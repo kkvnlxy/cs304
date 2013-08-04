@@ -1,5 +1,12 @@
 package sale;
 
+/**
+ * This is the entity class represents the Item in the database. Please note 
+ * that in this implementation, we don't have a field for the stock attribute,
+ * as well as the songs and singers.
+ * @author kevin
+ *
+ */
 public class Item 
 {
 	protected Item(	String upc, String title, ITEM_TYPE type, GENRE category,
@@ -19,7 +26,58 @@ public class Item
 	 * trivial getter methods:
 	 *****************************************
 	 */
+	final public String getUPC()
+	{
+		return this.UPC;
+	}
+	final public String getTitle()
+	{
+		return this.TITLE;
+	}
+	final public ITEM_TYPE getType()
+	{
+		return this.TYPE;
+	}
+	final public GENRE getCategory()
+	{
+		return this.CATEGORY;
+	}
+	final public String getCompany()
+	{
+		return this.COMPANY;
+	}
+	final public String getYear()
+	{
+		return this.YEAR;
+	}
+	/**
+	 * This method returns the price in cents, to obtain the price in dollar,
+	 * call getPrice() method instead.
+	 * @return the price in cents
+	 */
+	final public int getPriceInCents()
+	{
+		return this.PRICE_IN_CENT;
+	}
+	/**
+	 * This method returns the price in dollar, to obtain the price in cents,
+	 * call getPriceInCents() instead. 
+	 * @return the price in decimal form
+	 */
+	final public double getPrice()
+	{
+		return (double)this.PRICE_IN_CENT / (double)100;
+	}
 	
+	//enumerators:
+	public static enum ITEM_TYPE
+	{
+		CD, DVD
+	}
+	public static enum GENRE
+	{
+		POP, ROCK, RAP, COUNTRY, CLASSICAL, NEW_AGE, INSTRUMENTAL
+	}
 	
 	final private String UPC;
 	final private String TITLE;
@@ -29,12 +87,25 @@ public class Item
 	final private String YEAR; // or GregorianCalendar?
 	final private int PRICE_IN_CENT; // int vs double
 	
-	public static enum ITEM_TYPE
-	{
-		CD, DVD
-	}
-	public static enum GENRE
-	{
-		POP, ROCK, RAP, COUNTRY, CLASSICAL, NEW_AGE, INSTRUMENTAL
-	}
+	//static constant for attribute indexing.
+	//ONLY USE THESE WHEN YOU ARE ISSUING "SELECT * FROM Item" SQL
+	static public final int UPC_IND = 1;
+	static public final int TITLE_IND = 2;
+	static public final int TYPE_IND = 3;
+	static public final int CATEGORY_IND = 4;
+	static public final int COMPANY_IND = 5;
+	static public final int YEAR_IND = 6;
+	static public final int PRICE_IND = 7;
+	static public final int STOCK_IND = 8;
+	
+	//the following is only for enum translation between app code and database
+	static public final String TYPE_CD = "CD";
+	static public final String TYPE_DVD = "DVD";
+	static public final String GENRE_ROCK = "ROCK";
+	static public final String GENRE_POP = "POP";
+	static public final String GENRE_RAP = "RAP";
+	static public final String GENRE_COUNTRY = "COUNTRY";
+	static public final String GENRE_CLASSICAL = "CLASSICAL";
+	static public final String GENRE_NEW_AGE = "NEW_AGE";
+	static public final String GENRE_INST = "INSTRUMENTAL";
 }
