@@ -5,7 +5,7 @@ CREATE TABLE Item(
 	category VARCHAR(12) CHECK (category in ('ROCK', 'POP', 'RAP', 'COUNTRY', 'CLASSICAL', 'NEW_AGE', 'INSTRUMENTAL')),
 	company	VARCHAR(40) not null,
 	year	CHAR(4) not null,
-	price	FLOAT(2) not null,
+	price	NUMERIC(*, 2) not null,
 	stock	SMALLINT not null,
 	CHECK (price > 0.00 AND stock >=0));
 
