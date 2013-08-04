@@ -24,7 +24,7 @@ CREATE TABLE HasSong(
 		ON DELETE CASCADE);
 
 CREATE TABLE Customer(
-	cid		CHAR(16) not null PRIMARY KEY,
+	cid		VARCHAR(16) not null PRIMARY KEY,
 	pswd		VARCHAR(25) not null,
 	name		VARCHAR(20) not null,
 	address		VARCHAR(50) not null,
@@ -33,7 +33,7 @@ CREATE TABLE Customer(
 CREATE TABLE Purchase(
 	receiptId	CHAR(10) not null PRIMARY KEY,
 	pDate		DATE not null,
-	cid		CHAR(16),
+	cid		VARCHAR(16),
 	cardNum		CHAR(16),
 	expiryDate	DATE,
 	expectedDate	DATE,
