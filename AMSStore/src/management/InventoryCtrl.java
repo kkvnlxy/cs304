@@ -9,7 +9,7 @@ import sale.Item.ITEM_TYPE;
 
 /**
  * Control object class for management package
- * @author kevin
+ * @creator kevin
  *
  */
 public class InventoryCtrl 
