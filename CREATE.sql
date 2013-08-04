@@ -4,7 +4,7 @@ CREATE TABLE Item(
 	type	VARCHAR(3) CHECK (type in ('CD', 'DVD')),
 	category VARCHAR(12) CHECK (category in ('ROCK', 'POP', 'RAP', 'COUNTRY', 'CLASSICAL', 'NEW_AGE', 'INSTRUMENTAL')),
 	company	VARCHAR(25) not null,
-	year	DATE not null,
+	year	CHAR(4) not null,
 	price	FLOAT(2) not null,
 	stock	SMALLINT not null,
 	CHECK (price > 0.00 AND stock >=0));
@@ -47,25 +47,20 @@ CREATE TABLE PurchaseItem(
 	quantity	SMALLINT not null,
 	PRIMARY KEY (receiptId, upc),
 	FOREIGN KEY (receiptId) REFERENCES Purchase,
-		ON DELETE NO ACTION 
-	FOREIGN KEY (upc) REFERENCES Item
-		ON DELETE NO ACTION
+	FOREIGN KEY (upc) REFERENCES Item,
 	CHECK(quantity > 0));
 
 CREATE TABLE Refund(
 	retid		CHAR(30) not null PRIMARY KEY,
 	rDate		DATE not null,
 	receiptId	CHAR(10) not null,
-	FOREIGN KEY (receiptId) REFERENCES Purchase
-		ON DELETE NO ACTION);
+	FOREIGN KEY (receiptId) REFERENCES Purchase);
 
-CREATE TABLE ReturnItem(
+CREATE TABLE RefundItem(
 	retid		CHAR(30) not null,
 	upc		CHAR(4) not null,
 	quantity	SMALLINT not null,
 	PRIMARY KEY (retid, upc),
-	FOREIGN KEY (retid) REFERENCES Return,
-		ON DELETE NO ACTION
-	FOREIGN KEY (upc) REFERENCES Item
-		ON DELETE NO ACTION
-	CHECK (quantity > 0);
+	FOREIGN KEY (retid) REFERENCES Refund,
+	FOREIGN KEY (upc) REFERENCES Item,
+	CHECK (quantity > 0));
