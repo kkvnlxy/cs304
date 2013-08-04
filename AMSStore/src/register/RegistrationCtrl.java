@@ -27,8 +27,10 @@ public class RegistrationCtrl
 		
 		try
 		{
-			int result = stmt.executeUpdate();
-			return true;
+			if(stmt.executeUpdate() == 1)
+			//sanity check, usually will return 1
+				return true;
+			return false;
 		}
 		catch(SQLException expt)
 		//insert unseccessful due to database problem or a customer with same
