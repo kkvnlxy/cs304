@@ -47,28 +47,36 @@ public class AuthenCtrl
 		//sanity check
 			conn = JDBCConnection.getConnection(); 
 		
-		PreparedStatement stmt = conn.prepareStatement("SELECT * " +
-													   "FROM Customer" +
-													   "WHERE cid = " + CUST_ID);
-		ResultSet result = stmt.executeQuery();
-		if(result.next())
-		//a tuple is found from database
+		PreparedStatement stmt = conn.prepareStatement(
+										"SELECT * " +
+										"FROM Customer " +
+										"WHERE cid = '" + CUST_ID + "'");
+		try
 		{
-			String cid = result.getString(Customer.CID_IND);
-			String pswd = result.getString(Customer.PSWD_IND);
-			String name = result.getString(Customer.NAME_IND);
-			String adr = result.getString(Customer.ADRRESS_IND);
-			String phone = result.getString(Customer.PHONE_IND);
-			
-			if(this.PSWD.equals(pswd))
-			//passwords matches
-				return new Customer(cid, name, adr, phone);
+			ResultSet result = stmt.executeQuery();
+			if(result.next())
+			//a tuple is found from database
+			{
+				String cid = result.getString(Customer.CID_IND);
+				String pswd = result.getString(Customer.PSWD_IND);
+				String name = result.getString(Customer.NAME_IND);
+				String adr = result.getString(Customer.ADRRESS_IND);
+				String phone = result.getString(Customer.PHONE_IND);
+				
+				if(this.PSWD.equals(pswd))
+				//passwords matches
+					return new Customer(cid, name, adr, phone);
+				else
+					throw new AuthenException();
+			}
 			else
-				throw new AuthenException();
+				throw new SQLException("Customer ID cannot be found in the " +
+								   		"database");
 		}
-		else
-			throw new SQLException("Customer ID cannot be found in the " +
-								   "database");
+		finally
+		{
+			stmt.close();
+		}
 	}
 	
 	final private String CUST_ID;

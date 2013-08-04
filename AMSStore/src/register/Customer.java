@@ -22,6 +22,10 @@ public class Customer
 	 * trivial getter methods:
 	 *******************************************
 	 */
+	final public String getCustomerID()
+	{
+		return this.CID;
+	}
 	
 	final private String CID;
 	//pswd is not present because we don't need it
