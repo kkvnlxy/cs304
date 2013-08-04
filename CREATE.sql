@@ -28,7 +28,7 @@ CREATE TABLE Customer(
 	pswd		VARCHAR(25) not null,
 	name		VARCHAR(20) not null,
 	address		VARCHAR(50) not null,
-	phone		CHAR(20) not null);
+	phone		CHAR(12) not null);
 
 CREATE TABLE Purchase(
 	receiptId	CHAR(10) not null PRIMARY KEY,
@@ -64,3 +64,28 @@ CREATE TABLE RefundItem(
 	FOREIGN KEY (retid) REFERENCES Refund,
 	FOREIGN KEY (upc) REFERENCES Item,
 	CHECK (quantity > 0));
+
+-------------------------------------------------
+--Trigger
+-------------------------------------------------
+CREATE SEQUENCE RECEIPT_ID_SQ
+INCREMENT BY 1
+START WITH 10
+MAXVALUE 999999999
+MINVALUE 1
+CYCLE
+NOCACHE
+ORDER;
+
+CREATE OR REPLACE TRIGGER RECEIPT_ID_SQ
+before insert on Purchase
+for each row
+declare 
+cur_id number;
+begin
+if inserting then
+select concact ('P', to_char(RECEIPT_ID_SQ.nextval, '000000000'))
+into :NEW. "receiptId"
+from dual;
+end if;
+end;

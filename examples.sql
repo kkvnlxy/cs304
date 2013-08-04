@@ -91,54 +91,70 @@ INSERT INTO Customer VALUES('kevin', '1234', 'Kevin Liu', '2366 Main Mall, Vanco
 INSERT INTO Customer VALUES('kkvnlxy', '1234', 'Kevin Liu', '220 Yonge Street Toronto, ON
 M5B 2H1', '416-598-8560');
 INSERT INTO Customer VALUES('ang', '2234', 'Angela Wei', '2305 Rockland, Angle Acadie et Métropolitaine Montréal (Quebec) H3P 3E9', '514-342-2872');
+INSERT INTO Customer VALUES('lucia', '3453', 'Lucia Tseng', '2053 Main Mall, Vancouver, BC V6T 1Z2, Canada', '604-822-2665');
+INSERT INTO Customer VALUES('Christine', '9483204A1v', 'Christine Kim', '701 W Georgia St  Vancouver, BC V7Y 1G5', '604-688-7235');
 
 ---------------------------------------------------------------
 -- In Store Purchase:
 ---------------------------------------------------------------
 -- not returnable in cash
-insert into purchase values ('S000000001', to_date('21-07-2011', 'dd-mm-yyyy'), null, null, null, null, null);
+insert into purchase values ('P000000001', to_date('21-07-2011', 'dd-mm-yyyy'), null, null, null, null, null);
 -- returnable in cash
-insert into purchase values ('S000000002', to_date('03-08-2013', 'dd-mm-yyyy'), null, null, null, null, null);
+insert into purchase values ('P000000002', to_date('03-08-2013', 'dd-mm-yyyy'), null, null, null, null, null);
 -- returnable in CC
-insert into purchase values ('S000000003', to_date('04-08-2013', 'dd-mm-yyyy'), null, '1111111111111111', to_date('08-15', 'mm-rr'), null, null);
+insert into purchase values ('P000000003', to_date('04-08-2013', 'dd-mm-yyyy'), null, '1111111111111111', to_date('08-15', 'mm-rr'), null, null);
+-- day of presentation shopping frenzy
+insert into purchase values ('P000000004', to_date('12-08-2013', 'dd-mm-yyyy'), null, null, null, null, null);
 
 ---------------------------------------------------------------
 -- Online Purchase:
 ---------------------------------------------------------------
 -- delivered, can't return
-insert into purchase values ('W000000001', to_date('04-09-2012', 'dd-mm-yyyy'), 'kevin', '1234123412341234', to_date('10-16', 'mm-rr'), to_date('11-09-2012', 'dd-mm-yyyy'), to_date('11-09-2012', 'dd-mm-yyyy'));
+insert into purchase values ('P000000005', to_date('04-09-2012', 'dd-mm-yyyy'), 'kevin', '1234123412341234', to_date('10-16', 'mm-rr'), to_date('11-09-2012', 'dd-mm-yyyy'), to_date('11-09-2012', 'dd-mm-yyyy'));
 -- delivered, can return
-insert into purchase values ('W000000002', to_date('01-08-2013', 'dd-mm-yyyy'), 'ang', '1234123419361234', to_date('07-14', 'mm-rr'), to_date('08-08-2013', 'dd-mm-yyyy'), to_date('09-08-2013', 'dd-mm-yyyy'));
+insert into purchase values ('P000000006', to_date('01-08-2013', 'dd-mm-yyyy'), 'ang', '1234123419361234', to_date('07-14', 'mm-rr'), to_date('08-08-2013', 'dd-mm-yyyy'), to_date('09-08-2013', 'dd-mm-yyyy'));
 -- not yet delivered
-insert into purchase values ('W000000003', to_date('04-08-2013', 'dd-mm-yyyy'), 'ang', '1234123419361234', to_date('07-14', 'mm-rr'), to_date('10-08-2013', 'dd-mm-yyyy'), null);
+insert into purchase values ('P000000007', to_date('04-08-2013', 'dd-mm-yyyy'), 'ang', '1234123419361234', to_date('07-14', 'mm-rr'), to_date('10-08-2013', 'dd-mm-yyyy'), null);
+-- day of presentation shopping frenzy 
+insert into purchase values ('P000000008', to_date('12-08-2013', 'dd-mm-yyyy'), 'lucia', '1235555419361234', to_date('09-14', 'mm-rr'), to_date('22-08-2013', 'dd-mm-yyyy'), null);
 
 ---------------------------------------------------------------
 -- PurchaseItem:
 ---------------------------------------------------------------
 -- ISP 1 item
-insert into purchaseitem values ('S000000001', '0004', '1');
-insert into purchaseitem values ('S000000001', '0009', '1'); --already returned
+insert into purchaseitem values ('P000000001', '0004', '1');
+insert into purchaseitem values ('P000000001', '0009', '1'); --already returned
 -- ISP 2 items [come back to return one of '0002' in cash]
-insert into purchaseitem values ('S000000002', '0002', '2');
-insert into pucrhaseitem values ('S000000002', '0001', '1');
+insert into purchaseitem values ('P000000002', '0002', '2');
+insert into pucrhaseitem values ('P000000002', '0001', '1');
 -- ISP 1 item [come back to return in CC]
-insert into purchaseitem values ('S000000003', '0002', '5');
+insert into purchaseitem values ('P000000003', '0002', '5');
 -- OP 2 items tries to return 
-insert into purchaseitem values ('W000000001', '0003', '1'); --already returned
-insert into purchaseitem values ('W000000001', '0009', '1');
+insert into purchaseitem values ('P000000005', '0003', '1');
+insert into purchaseitem values ('P000000005', '0009', '1');
 -- OP 5 'POP' items
-insert into purchaseitem values ('W000000002', '0001', '1');
-insert into purchaseitem values ('W000000002', '0002', '1');
-insert into purchaseitem values ('W000000002', '0006', '1');
+insert into purchaseitem values ('P000000006', '0001', '1');
+insert into purchaseitem values ('P000000006', '0002', '1');
+insert into purchaseitem values ('P000000006', '0006', '1');
 -- OP 1 item
-insert into purchaseitem values ('W000000003', '0005', '2');
+insert into purchaseitem values ('P000000007', '0005', '2');
+-- Day of presentation purchases
+-- ISPFrenzy
+insert into purchaseitem values ('P000000004', '0005', '5');
+insert into purchaseitem values ('P000000004', '0006', '4');
+insert into purchaseitem values ('P000000004', '0007', '5');
+insert into purchaseitem values ('P000000004', '0008', '2');
+-- OP Frenzy
+insert into purchaseitem values ('P000000008', '0007', '7');
+insert into purchaseitem values ('P000000008', '0002', '5');
+insert into purchaseitem values ('P000000008', '0005', '2');
 
 ---------------------------------------------------------------
 -- Refund:
 ---------------------------------------------------------------
-insert into refund values ('RS00000001', to_date('28-07-2011', 'dd-mm-yyyy'), 'S000000001');
+insert into refund values ('R000000001', to_date('28-07-2011', 'dd-mm-yyyy'), 'P000000001');
 
 ---------------------------------------------------------------
 -- RefundItem:
 ---------------------------------------------------------------
-insert into refunditem values ('RS00000001', '0009', '1');
+insert into refunditem values ('R000000001', '0009', '1');
