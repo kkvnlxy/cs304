@@ -26,6 +26,18 @@ public class Customer
 	{
 		return this.CID;
 	}
+	final public String getName()
+	{
+		return this.NAME;
+	}
+	final public String getAddress()
+	{
+		return this.ADDRESS;
+	}
+	final public String getPhone()
+	{
+		return this.PHONE;
+	}
 	
 	final private String CID;
 	//pswd is not present because we don't need it
@@ -40,5 +52,11 @@ public class Customer
 	final static protected int NAME_IND = 2;
 	final static protected int ADRRESS_IND = 2;
 	final static protected int PHONE_IND = 2;
+	//or instead using these:
+	final static protected String CID_LAB = "cid";
+	final static protected String PSWD_LAB = "pswd";
+	final static protected String NAME_LAB = "name";
+	final static protected String ADDRESS_LAB = "address";
+	final static protected String PHONE_LAB = "phone";
 }
 
