@@ -3,7 +3,7 @@ CREATE TABLE Item(
 	title	VARCHAR(50) not null,
 	type	VARCHAR(3) CHECK (type in ('CD', 'DVD')),
 	category VARCHAR(12) CHECK (category in ('ROCK', 'POP', 'RAP', 'COUNTRY', 'CLASSICAL', 'NEW_AGE', 'INSTRUMENTAL')),
-	company	VARCHAR(25) not null,
+	company	VARCHAR(40) not null,
 	year	CHAR(4) not null,
 	price	FLOAT(2) not null,
 	stock	SMALLINT not null,
@@ -51,13 +51,13 @@ CREATE TABLE PurchaseItem(
 	CHECK(quantity > 0));
 
 CREATE TABLE Refund(
-	retid		CHAR(30) not null PRIMARY KEY,
+	retid		CHAR(10) not null PRIMARY KEY,
 	rDate		DATE not null,
 	receiptId	CHAR(10) not null,
 	FOREIGN KEY (receiptId) REFERENCES Purchase);
 
 CREATE TABLE RefundItem(
-	retid		CHAR(30) not null,
+	retid		CHAR(10) not null,
 	upc		CHAR(4) not null,
 	quantity	SMALLINT not null,
 	PRIMARY KEY (retid, upc),

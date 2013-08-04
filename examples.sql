@@ -5,7 +5,11 @@ insert into item values ('0001', 'We Can"t Stop', 'CD', 'POP', 'RCA Records', '2
 insert into item values ('0002', 'Believe', 'CD', 'POP', 'The Item Def Jam Music Group', '2012', '13.99', '6');
 insert into item values ('0003', 'Beethoven: The Piano Concertos', 'DVD', 'CLASSICAL', 'Deutsche Grammophon Studio', '2007', '34.99', '3');
 insert into item values ('0004', 'Grand Ole Opry at Carnegie Hall', 'DVD', 'COUNTRY', 'RCA Studio', '2006', '11.98', '1');
-
+insert into item values ('0005', 'Can"t Believe It', 'CD', 'RAP', 'Alantic Recording Cooportation', '2013', '1.29', '5');
+insert into item values ('0006', 'Bonfire Heart', 'CD', 'POP', 'Warner Music UK Limited', '2013', '1.29', '4');
+insert into item values ('0007', 'Shelter Valley', 'CD', 'ROCK', 'Universal Music Canada', '2013', '1.29', '12');
+insert into item values ('0008', 'Music For Healing', 'CD', 'NEW_AGE', 'The Relaxation Company', '2003', '8.59', '2');
+insert into item values ('0009', 'A Day To Remember', 'CD', 'INSTRUMENTAL', 'Shamrock-n-Roll, Inc.', '2002', '0.99', '5');
 
 ---------------------------------------------------------------
 -- LeadSinger:
@@ -14,6 +18,11 @@ insert into leadsinger values ('0001', 'Miley Cyrus');
 insert into leadsinger values ('0002', 'Justin Bieber');
 insert into leadsinger values ('0003', 'Vladimir Ashkenazy'); 
 insert into leadsinger values ('0004', 'Trace Adkins');
+insert into leadsinger values ('0005', 'Flo Rida');
+insert into leadsinger values ('0006', 'James Blunt');
+insert into leadsinger values ('0007', 'Gentlemen Husbands');
+insert into leadsinger values ('0008', 'Steven Halpern');
+insert into leadsinger values ('0009', 'The O"Neill Brothers');
 
 ---------------------------------------------------------------
 -- HasSong:
@@ -62,6 +71,18 @@ insert into hassong values ('0004', 'Independence Day');
 insert into hassong values ('0004', '"Til I Can Make It On My Own');
 insert into hassong values ('0004', 'Remember When');
 insert into hassong values ('0004', 'Chattahoochee');
+insert into hassong values ('0005', 'Can"t Believe It');
+insert into hassong values ('0006', 'Bonfire Heart');
+insert into hassong values ('0007', 'Shelter Valley');
+insert into hassong values ('0008', 'Interstellar Light');
+insert into hassong values ('0008', 'Awakening');
+insert into hassong values ('0008', 'Stillpoint');
+insert into hassong values ('0008', 'Jerusalem');
+insert into hassong values ('0008', 'Ascension');
+insert into hassong values ('0008', 'Oneness');
+insert into hassong values ('0008', 'Healing Music #1');
+insert into hassong values ('0008', 'Healing Music #2');
+insert into hassong values ('0009', 'Falling in Love');
 
 ---------------------------------------------------------------
 -- Customer:
@@ -74,7 +95,7 @@ INSERT INTO Customer VALUES('ang', '2234', 'Angela Wei', '2305 Rockland, Angle A
 ---------------------------------------------------------------
 -- In Store Purchase:
 ---------------------------------------------------------------
--- not returnable
+-- not returnable in cash
 insert into purchase values ('S000000001', to_date('21-07-2011', 'dd-mm-yyyy'), null, null, null, null, null);
 -- returnable in cash
 insert into purchase values ('S000000002', to_date('03-08-2013', 'dd-mm-yyyy'), null, null, null, null, null);
@@ -91,3 +112,33 @@ insert into purchase values ('W000000002', to_date('01-08-2013', 'dd-mm-yyyy'), 
 -- not yet delivered
 insert into purchase values ('W000000003', to_date('04-08-2013', 'dd-mm-yyyy'), 'ang', '1234123419361234', to_date('07-14', 'mm-rr'), to_date('10-08-2013', 'dd-mm-yyyy'), null);
 
+---------------------------------------------------------------
+-- PurchaseItem:
+---------------------------------------------------------------
+-- ISP 1 item
+insert into purchaseitem values ('S000000001', '0004', '1');
+insert into purchaseitem values ('S000000001', '0009', '1'); --already returned
+-- ISP 2 items [come back to return one of '0002' in cash]
+insert into purchaseitem values ('S000000002', '0002', '2');
+insert into pucrhaseitem values ('S000000002', '0001', '1');
+-- ISP 1 item [come back to return in CC]
+insert into purchaseitem values ('S000000003', '0002', '5');
+-- OP 2 items tries to return 
+insert into purchaseitem values ('W000000001', '0003', '1'); --already returned
+insert into purchaseitem values ('W000000001', '0009', '1');
+-- OP 5 'POP' items
+insert into purchaseitem values ('W000000002', '0001', '1');
+insert into purchaseitem values ('W000000002', '0002', '1');
+insert into purchaseitem values ('W000000002', '0006', '1');
+-- OP 1 item
+insert into purchaseitem values ('W000000003', '0005', '2');
+
+---------------------------------------------------------------
+-- Refund:
+---------------------------------------------------------------
+insert into refund values ('RS00000001', to_date('28-07-2011', 'dd-mm-yyyy'), 'S000000001');
+
+---------------------------------------------------------------
+-- RefundItem:
+---------------------------------------------------------------
+insert into refunditem values ('RS00000001', '0009', '1');
