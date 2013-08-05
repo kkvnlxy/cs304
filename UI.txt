@@ -1,0 +1,49 @@
+------------------------------------------------------------------------------------------
+Transactions performed by a clerk:
+------------------------------------------------------------------------------------------
+process a purchase of  items in the store
+- upc + quantity of all items
+- payment method: cash or cc
+- cc: authorization and clear buttons
+- purchase cancel button
+- receipt: receipt number, the date, a list with the items purchased, quantities, prices, 
+and the total amount, last 5 digits of the card's number(cc).
+
+
+process a return of an item for refund 
+- return within 15 days from the purchase date
+- system verifies the receipt and issues a refund in the original payment form
+------------------------------------------------------------------------------------------
+Transactions performed by a customer:
+------------------------------------------------------------------------------------------
+
+registration (if it is the first time accessing the system)
+- name, their address, phone number,  an id (unique) and a password.
+- If the id is already in the system, they will be asked to provide another one. 
+
+purchase of  items online
+
+- login:  customer id and password
+- virtual shopping basket:  customer providing the category, or the title, or the leading 
+singer (or all of them),  and the quantity -> display all the items that match the input 
+and ask the customer to select one -> check qty and add to cart -> if(qty low) ask the 
+customer to accept the existing quantity
+- bill: items and total amount
+- credit card number and expiry date -> complete transaction
+- create a purchase for the store and inform expected date
+
+------------------------------------------------------------------------------------------
+Transactions performed by a manager :
+------------------------------------------------------------------------------------------
+add items to the store; this will normally add a number of copies of the same item
+- upc, quantity, unit price (optional) -> update
+
+process the delivery of an order (it just sets the delivery date)
+
+
+daily sales report
+- user provides a date -> system creates a daily sales report
+
+top selling items
+- date + n -> list of the n best selling items on that day. 
+- shows the title, the company, the current stock and the number of copies sold
