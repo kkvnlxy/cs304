@@ -68,11 +68,23 @@ SET deliveredDate = deliveredDate_input
 WHERE receiptId = receiptId_input;
 
 -- daily sales report
+--outdated and old D:
 SELECT I.upc, I.category, I.price, PI.quantity
 FROM Purchase P, PurchaseItem PI, Item I
-WHERE P.receiptId = PI.receiptId AND PI.upc = I.upc AND P.pDate = pDate_input;
+WHERE P.receiptId = PI.receiptId AND PI.upc = I.upc AND P.pDate = pDate_input
 ORDER BY I.category
 -- total sales value for each category is displayed, and in the bottom the TOTAL sales value for that DAY.
+
+--Angela & Lucia daily report complete :D
+COLUMN UPC FORMAT A20
+BREAK ON CATEGORY ON REPORT
+COMPUTE SUM LABEL Total OF "Total Value" ON CATEGORY
+COMPUTE SUM LABEL "Total Daily Sales" OF "Total Value" ON REPORT
+SELECT I.upc, I.category, I.price AS "Unit Price", PI.quantity AS "Units", I.price * PI.quantity AS "Total Value"
+FROM Purchase P, PurchaseItem PI, Item I
+WHERE P.receiptId = PI.receiptId AND PI.upc = I.upc AND P.pDate = to_date('12-08-2013', 'dd-mm-yyyy')
+ORDER BY I.category;
+
 
 -- top n selling item
 SELECT SUM(PI.quantity)
