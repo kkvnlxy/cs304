@@ -68,6 +68,7 @@ CREATE TABLE RefundItem(
 -------------------------------------------------
 --Trigger
 -------------------------------------------------
+<<<<<<< HEAD
 CREATE SEQUENCE RECEIPT_ID_SQ
 INCREMENT BY 1
 START WITH 10
@@ -85,4 +86,26 @@ SELECT concact ('P', to_char(RECEIPT_ID_SQ.nextval, '000000000'))
 into :NEW. "receiptId"
 from dual;
 end if;
+=======
+CREATE SEQUENCE ReceiptID_SEQ
+start with 1
+nomaxvalue;
+CREATE or REPLACE TRIGGER ReceiptID_TG
+before insert on Purchase
+for each row
+begin
+	select to_char(ReceiptId_SEQ.nextval) into :new.receiptID from dual;
 end;
+/
+
+CREATE SEQUENCE RetID_SEQ
+start with 1
+nomaxvalue;
+CREATE OR REPLACE TRIGGER RetID_TG
+before insert on Refund
+for each row
+begin
+	select to_char(RetID_SEQ.nextval) into :new.retID from dual;
+>>>>>>> 71fb19bbaa32a269ad8dcb779bb4e5b2865c2413
+end;
+/
