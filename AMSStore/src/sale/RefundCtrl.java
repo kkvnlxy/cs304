@@ -29,6 +29,8 @@ public class RefundCtrl extends TransactionCtrl
 	public RefundCtrl(String pur_id) 
 			throws ClassNotFoundException, IOException, SQLException
 	{
+		super();
+		
 		if(conn == null)
 			conn = JDBCConnection.getConnection();
 		

@@ -17,6 +17,11 @@ import util.JDBCConnection;
 
 public class OnlinePurchaseCtrl extends TransactionCtrl 
 {
+	public OnlinePurchaseCtrl()
+	{
+		super();
+	}
+	
 	/*
 	 **********************************************
 	 * inheriting abstract methods:

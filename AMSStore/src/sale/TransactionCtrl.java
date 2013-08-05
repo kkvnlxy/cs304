@@ -20,6 +20,11 @@ import util.JDBCConnection;
  */
 public abstract class TransactionCtrl 
 {
+	protected TransactionCtrl()
+	{
+		this.items = new HashMap<Item, Integer>();
+	}
+	
 	/**
 	 * Add an Item object to the items, which require to go to the Item table
 	 * @param upc the upc going to be added
@@ -42,7 +47,7 @@ public abstract class TransactionCtrl
 		
 		PreparedStatement stmt = conn.prepareStatement(
 										"SELECT * " +
-										"FROM Item" +
+										"FROM Item " +
 										"WHERE upc = " + upc);
 		try
 		{
