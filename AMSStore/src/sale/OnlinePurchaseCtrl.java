@@ -113,10 +113,29 @@ public class OnlinePurchaseCtrl extends TransactionCtrl
 		//TODO need further operation??
 	}
 	
-	private GregorianCalendar expectDelivery()
+	private GregorianCalendar expectDelivery() 
+			throws ClassNotFoundException, IOException, SQLException
 	{
-		//TODO not yet implemented
-		return null;
+		if(this.conn == null)
+			this.conn = JDBCConnection.getConnection();
+		
+		PreparedStatement stmt = conn.prepareStatement(
+										"SELECT COUNT(8) " +
+										"FROM Purchase " +
+										"WHERE cid IS NOT null AND " +
+											  "deliveredDate IS null");
+		try
+		{
+			ResultSet result = stmt.executeQuery();
+			int days = result.getInt(0) / JDBCConnection.MAX_DAILY_CAPACITY;
+			GregorianCalendar expt_date = new GregorianCalendar();
+			expt_date.add(Calendar.DATE, days);
+			return expt_date;
+		}
+		finally
+		{
+			stmt.close();
+		}
 	}
 	/**
 	 * process the PurchaseItem table:
