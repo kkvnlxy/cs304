@@ -89,7 +89,7 @@ end if;
 =======
 CREATE SEQUENCE ReceiptID_SEQ
 start with 1
-nomaxvalue;
+MAXVALUE 9999999999;
 CREATE or REPLACE TRIGGER ReceiptID_TG
 before insert on Purchase
 for each row
@@ -100,7 +100,7 @@ end;
 
 CREATE SEQUENCE RetID_SEQ
 start with 1
-nomaxvalue;
+MAXVALUE 9999999999;
 CREATE OR REPLACE TRIGGER RetID_TG
 before insert on Refund
 for each row
