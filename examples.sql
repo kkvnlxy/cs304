@@ -90,7 +90,7 @@ insert into hassong values ('0009', 'Falling in Love');
 INSERT INTO Customer VALUES('kevin', '1234', 'Kevin Liu', '2366 Main Mall, Vancouver, BC Canada V6T 1Z4', '604-822-6894');
 INSERT INTO Customer VALUES('kkvnlxy', '1234', 'Kevin Liu', '220 Yonge Street Toronto, ON
 M5B 2H1', '416-598-8560');
-INSERT INTO Customer VALUES('ang', '2234', 'Angela Wei', '2305 Rockland, Angle Acadie et Métropolitaine Montréal (Quebec) H3P 3E9', '514-342-2872');
+INSERT INTO Customer VALUES('ang', '2234', 'Angela Wei', '1961 E Mall, Vancouver, BC V6T 1Z1', '514-342-2872');
 INSERT INTO Customer VALUES('lucia', '3453', 'Lucia Tseng', '2053 Main Mall, Vancouver, BC V6T 1Z2, Canada', '604-822-2665');
 INSERT INTO Customer VALUES('Christine', '9483204A1v', 'Christine Kim', '701 W Georgia St  Vancouver, BC V7Y 1G5', '604-688-7235');
 
@@ -123,10 +123,11 @@ insert into purchase values ('P000000008', to_date('12-08-2013', 'dd-mm-yyyy'), 
 ---------------------------------------------------------------
 -- ISP 1 item
 insert into purchaseitem values ('P000000001', '0004', '1');
-insert into purchaseitem values ('P000000001', '0009', '1'); --already returned
+--already returned
+insert into purchaseitem values ('P000000001', '0009', '1');
 -- ISP 2 items [come back to return one of '0002' in cash]
 insert into purchaseitem values ('P000000002', '0002', '2');
-insert into pucrhaseitem values ('P000000002', '0001', '1');
+insert into purchaseitem values ('P000000002', '0001', '1');
 -- ISP 1 item [come back to return in CC]
 insert into purchaseitem values ('P000000003', '0002', '5');
 -- OP 2 items tries to return 

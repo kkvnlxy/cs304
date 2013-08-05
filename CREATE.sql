@@ -18,7 +18,7 @@ CREATE TABLE LeadSinger(
 
 CREATE TABLE HasSong(
 	upc	CHAR(4) not null,
-	title	VARCHAR(30) not null,
+	title	VARCHAR(80) not null,
 	PRIMARY KEY (upc, title),
 	FOREIGN KEY (upc) REFERENCES Item
 		ON DELETE CASCADE);
