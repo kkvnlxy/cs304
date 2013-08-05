@@ -1,5 +1,6 @@
 package sale;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -31,6 +32,11 @@ public abstract class TransactionCtrl
 	public Item addItem(String upc, int qty) 
 			throws SQLException, ClassNotFoundException, IOException
 	{
+		if(qty <= 0)
+		//sanity check
+			throw new IOException("Quantity cannot be less than or equal to " +
+								  "0.");
+		
 		if(this.conn == null)
 			this.conn = JDBCConnection.getConnection();
 		
@@ -83,9 +89,13 @@ public abstract class TransactionCtrl
 	 * @param exp_date expiry date, null if pay by cash
 	 * @return Purchase or Return for relevant operation
 	 * @throws SQLException any exception possible
+	 * @throws FileNotFoundException if the configuration file cannot be found
+	 * @throws IOException error when parsing configuration file
+	 * @throws ClassNotFoundException database driver not found in the system
 	 */
 	public abstract Receipt process(String card_num, GregorianCalendar exp_date)
-			throws SQLException;
+			throws SQLException, ClassNotFoundException, FileNotFoundException, 
+				   IOException;
 	
 	/**
 	 * Set all the current state of this object to null, prepare for the next
