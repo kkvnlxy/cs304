@@ -30,6 +30,7 @@ public class StorePurchaseCtrl extends TransactionCtrl
 		if(this.conn == null)
 			this.conn = JDBCConnection.getConnection();
 		
+		//true if it is cash purchase, false if credit card
 		boolean cash_pur = 	(card_num == null && exp_date == null) ||
 							(card_num.equals(""));
 		
@@ -43,10 +44,10 @@ public class StorePurchaseCtrl extends TransactionCtrl
 			 */
 			//preparing the statement
 			if(cash_pur)
-			//cash purchase: cardNum and expiryDate have to be null, not empty
-			//				 string
 			{
 				stmt = conn.prepareStatement(
+							//cash purchase: cardNum and expiryDate have to be 
+							//null, not empty string (ie only setting pDate)
 							"INSERT INTO Purchase (pDate) " +
 							"VALUES (?)",
 							//receiptId is auto-generated attribute
@@ -74,9 +75,9 @@ public class StorePurchaseCtrl extends TransactionCtrl
 			if(!result.next())
 			//sanity check
 				throw new SQLException("No Receipt ID can be generated.");
-			String r_id = result.getString(1);//retrieve the receiptId
-			
+			String r_id = result.getString(1);//retrieve the receiptId		
 //			stmt.close();//TODO need?
+			
 			processItems(r_id);
 			
 			//last, construct a representation of the Puchase entry
@@ -109,7 +110,7 @@ public class StorePurchaseCtrl extends TransactionCtrl
 	 * insert new entry for each item in the items instance field
 	 * +
 	 * process the Item table:
-	 * update the stock attribute with each item in items instance 
+	 * update (decrement) the stock attribute with each item in items instance 
 	 * field
 	 * @author kevin
 	 * @throws SQLException 
@@ -129,7 +130,7 @@ public class StorePurchaseCtrl extends TransactionCtrl
 				//adding entry to PurchaseItem table:
 				int count = stmt.executeUpdate(
 								"INSERT INTO PurchaseItem " +
-										"VALUES(" + r_id +", " + 
+								"VALUES(" + r_id +", " + 
 										each.getKey().getUPC() + ", " +
 										each.getValue().intValue() + ")");
 				if(count != 1)

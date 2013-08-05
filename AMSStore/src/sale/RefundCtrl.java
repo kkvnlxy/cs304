@@ -5,8 +5,10 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.Map.Entry;
 
 import sale.Receipt.PAYMENT_METHOD;
 import util.JDBCConnection;
@@ -62,7 +64,7 @@ public class RefundCtrl extends TransactionCtrl
 				//keep track of the purchase in the instance fields:
 				this.purc = new Purchase(rcpt_id, pur_date, cid, card_num, 
 									 	 expr_date, expt_date, del_date);
-				verify();
+				this.verify();
 			}
 			else
 			//purchase cannot be found
@@ -112,7 +114,50 @@ public class RefundCtrl extends TransactionCtrl
 		
 		if(status)
 		{
-			
+			//0. Get the corresponding payment method and check whether the 
+			//supplied parameter is correct
+			PAYMENT_METHOD method = this.getPaymentMethod();
+			//check if the supplied parameters are same as the one in database
+			if((method == PAYMENT_METHOD.CREDIT_CARD) && //short circuit
+			   (!purc.getCardNum().equals(card_num) ||
+				purc.getExprDate().DATE != exp_date.DATE))//TODO: testing needed
+				return null;
+			//else if it is cash, don't care what the credit card is supplied
+
+			PreparedStatement stmt = null;
+			try
+			{
+				//1. Inserting an entry into Refund table and retrieve the 
+				//auto-gen retid
+				stmt = conn.prepareStatement(
+								"INSERT INTO Refund(rDate, receiptId) " +
+								"VALUES (?, ?)", 
+								Statement.RETURN_GENERATED_KEYS);
+				stmt.setDate(1, new Date(Calendar.getInstance().DATE));
+				stmt.setString(2, purc.getRcptId());
+				int count = stmt.executeUpdate();
+				if(count != 1)
+				//sanity check
+					throw new SQLException("Fail to create a Refund.");
+				ResultSet result = stmt.getGeneratedKeys();
+				if(!result.next())
+				//sanity check
+					throw new SQLException("No Refund ID can be generated.");
+				String ret_id = result.getString(1);//retrieve the receiptId
+				//stmt.close();//TODO: need?
+				
+				//2. With the retid, inserting entries into RefundItem table,
+				//3. Update the stock
+				this.processItems(ret_id);
+				
+				//4. Construct and return a Refund entity object:
+				return new Return(purc.getRcptId(), new GregorianCalendar(),
+								  ret_id);
+			}
+			finally
+			{
+				stmt.close();
+			}
 		}
 		else
 			return null;
@@ -168,6 +213,53 @@ public class RefundCtrl extends TransactionCtrl
 		return new GregorianCalendar(date.getYear(), date.getMonth(),
 									 date.getDay(), date.getHours(), 
 									 date.getMinutes(), date.getSeconds());
+	}
+	/**
+	 * process the RefundItem table:
+	 * insert new entry for each item in the items instance field
+	 * +
+	 * process the Item table:
+	 * update (increment) the stock attribute with each item in items instance 
+	 * field
+	 * @author kevin
+	 * @throws SQLException 
+	 * @throws IOException 
+	 * @throws ClassNotFoundException 
+	 */
+	private void processItems(String ret_id) 
+			throws SQLException, ClassNotFoundException, IOException
+	{
+		if(this.conn == null)
+			this.conn = JDBCConnection.getConnection();
+		PreparedStatement stmt = null;
+		try
+		{
+			for(Entry<Item, Integer> each : this.items.entrySet())
+			{
+				int count = stmt.executeUpdate(
+								"INSERT INTO RefundItem " +
+								"VALUES(" + ret_id + ", " + 
+										each.getKey().getUPC() + ", " + 
+										each.getValue().intValue() + ")" );
+				if(count != 1)
+					//sanity check
+						throw new SQLException("This item has already been " +
+										   	   "associated with the purchase.");
+				
+				//updating stock in Item table:
+				count = stmt.executeUpdate(
+							"UPDATE Item " +
+							"SET stock = stock + " + each.getValue().intValue() +
+							"WHERE upc = " + each.getKey().getUPC());
+				if(count != 1)
+				//sanity check
+					throw new SQLException("Fatal error: Duplicate UPC.");
+			}
+		}
+		finally
+		{
+			stmt.close();
+		}
 	}
 	
 	private boolean status; //within 15 days?
