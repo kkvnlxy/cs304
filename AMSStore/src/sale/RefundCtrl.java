@@ -99,12 +99,23 @@ public class RefundCtrl extends TransactionCtrl
 		else
 			return null;
 	}
+	/**
+	 * @return a Retun object if refund succeed, a null value is returned for
+	 * 		   un-qualified refund
+	 */
 	@Override
 	public Receipt process(String card_num, GregorianCalendar exp_date)
-			throws SQLException
+			throws SQLException, ClassNotFoundException, IOException
 	{
-		// TODO Auto-generated method stub
-		return null;
+		if(this.conn == null)
+			this.conn = JDBCConnection.getConnection();
+		
+		if(status)
+		{
+			
+		}
+		else
+			return null;
 	}
 	/**
 	 * @author kevin
