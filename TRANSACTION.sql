@@ -94,5 +94,12 @@ GROUP BY PI.upc
 ORDER BY SUM(PI.quantity) DESC LIMIT n_input;
 -- we additionally need title, company, current stock.  We have SUM(PI.quantity) = copies sold, so that's good.
 
+--Angela finished TOPNItem
+SELECT I.UPC, I.title, I.company, I.stock, SUM(PI.quantity) AS "Total Units"
+FROM Purchase P, PurchaseItem PI, Item I
+WHERE P.pDate = to_date('12-08-2013', 'dd-mm-yyyy') AND P.receiptId = PI.receiptId AND PI.quantity > 0 AND I.UPC = PI.UPC
+GROUP BY I.UPC, I.title, I.company, I.stock
+ORDER BY "Total Units" DESC;
+
 -- For each transaction, make sure to check errors and produce appropriate messages for the user.
 
