@@ -31,7 +31,7 @@ CREATE TABLE Customer(
 	phone		CHAR(12) not null);
 
 CREATE TABLE Purchase(
-	receiptId	CHAR(10) not null PRIMARY KEY,
+	receiptId	CHAR(10) PRIMARY KEY,
 	pDate		DATE not null,
 	cid		VARCHAR(16),
 	cardNum		CHAR(16),
@@ -77,14 +77,11 @@ CYCLE
 NOCACHE
 ORDER;
 
-CREATE OR REPLACE TRIGGER RECEIPT_ID_SQ
-before insert on Purchase
-for each row
-declare 
-cur_id number;
-begin
-if inserting then
-select concact ('P', to_char(RECEIPT_ID_SQ.nextval, '000000000'))
+CREATE TRIGGER RECEIPT_ID_GEN
+AFTER INSERT ON Purchase
+FOR EACH STATEMENT 
+if :NEW. "receiptId" is null then
+SELECT concact ('P', to_char(RECEIPT_ID_SQ.nextval, '000000000'))
 into :NEW. "receiptId"
 from dual;
 end if;
