@@ -105,11 +105,8 @@ CREATE OR REPLACE TRIGGER RetID_TG
 before insert on Refund
 for each row
 begin
-<<<<<<< HEAD
 	select to_char(RetID_SEQ.nextval) into :new.retID from dual;
->>>>>>> 71fb19bbaa32a269ad8dcb779bb4e5b2865c2413
 =======
 	select concat('R', to_char(RetID_SEQ.nextval)) into :new.retID from dual;
->>>>>>> 8c18eeee4d7f87ce2058bc5b9e141432a095e921
 end;
 /
