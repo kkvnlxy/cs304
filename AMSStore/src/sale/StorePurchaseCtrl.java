@@ -54,10 +54,12 @@ public class StorePurchaseCtrl extends TransactionCtrl
 							//cash purchase: cardNum and expiryDate have to be 
 							//null, not empty string (ie only setting pDate)
 							"INSERT INTO Purchase (pDate) " +
-							"VALUES (?)",
+							"VALUES (to_date('?-?-?', 'dd-mm-yyyy'))",
 							//receiptId is auto-generated attribute
 							new String[]{"receiptId"});
-				stmt.setDate(1, new Date(Calendar.getInstance().DATE));
+				stmt.setString(1, "" + Calendar.getInstance().DAY_OF_MONTH);
+				stmt.setString(2, "" + Calendar.getInstance().MONTH);
+				stmt.setString(3, "" + Calendar.getInstance().YEAR);
 			}
 			else
 			//credit card purchase
