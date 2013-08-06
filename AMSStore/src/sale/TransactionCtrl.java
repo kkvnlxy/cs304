@@ -33,9 +33,10 @@ public abstract class TransactionCtrl
 	 * @throws SQLException there is no tuple in the Item table with that upc
 	 * @throws IOException if configuration file parsing error
 	 * @throws ClassNotFoundException database driver cannot be found
+	 * @throws Exception if not enough stock for the given item
 	 */
 	public Item addItem(String upc, int qty) 
-			throws SQLException, ClassNotFoundException, IOException
+			throws SQLException, ClassNotFoundException, IOException, Exception
 	{
 		if(qty <= 0)
 		//sanity check
@@ -70,6 +71,14 @@ public abstract class TransactionCtrl
 				String year = result.getString(Item.YEAR_IND);
 				
 				int price = (int)result.getDouble(Item.PRICE_IND) * 100;
+				
+				int stk = result.getInt(Item.STOCK_IND);
+				if(stk == 0)
+				//sanity check
+					//TODO cannot think of what is the appropriate exception,
+					//		use the most general one for the moment
+					throw new Exception("Not enough stock for " + title + 
+										"(" + upc + ")");
 				
 				//adding this item item to the cart and returns it
 				Item item = new Item(the_upc, title, type, category, company, 

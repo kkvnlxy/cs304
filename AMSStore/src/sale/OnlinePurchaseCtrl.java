@@ -23,11 +23,6 @@ public class OnlinePurchaseCtrl extends TransactionCtrl
 		super();
 	}
 	
-	/*
-	 **********************************************
-	 * inheriting abstract methods:
-	 **********************************************
-	 */
 	/**
 	 * @pre the cur_cust field must be authenticated before this method is
 	 * 		called
@@ -42,16 +37,13 @@ public class OnlinePurchaseCtrl extends TransactionCtrl
 		if(conn == null)
 			conn = JDBCConnection.getConnection();
 
-		/*
-		 * Process the Purchase table:
-		 * insert a new entry
-		 */
-		//First determine the expected delivery date:
+		//0. First determine the expected delivery date:
 		GregorianCalendar expt_date = expectDelivery();
 
 		PreparedStatement stmt = null;
 		try
 		{
+			//1. Process the Purchase table: insert a new entry
 			stmt = conn.prepareStatement(
 					"INSERT INTO Purchase (pDate, " +
 										  "cid, " +
@@ -59,25 +51,28 @@ public class OnlinePurchaseCtrl extends TransactionCtrl
 										  "expiryDate, " +
 										  "expectedDate)" +
 					"VALUES (?, ?, ?, ?, ?)",
+					//tells the stmt object the auto-gen key attribute
 					new String[]{"receiptId"});
 			stmt.setDate(1, new Date(Calendar.getInstance().getTimeInMillis()));
 			stmt.setString(2, cur_cust.getCustomerID());
 			stmt.setString(3, card_num);
 			stmt.setDate(4, new Date(exp_date.getTimeInMillis()));
 			stmt.setDate(5, new Date(expt_date.getTimeInMillis()));
-			
 			int count = stmt.executeUpdate();
 			if(count != 1)
 			//sanity check
 				throw new SQLException("Fail to create a Purchase.");
-			ResultSet result = stmt.getGeneratedKeys();
+			ResultSet result = stmt.getGeneratedKeys();//get the auto-gen key
 			if(!result.next())
 			//sanity check
 				throw new SQLException("No Receipt ID can be generated.");
 			String r_id = result.getString(1);//retrieve the receiptId
 			
+			//2. Process the PurchaseItem table with receiptId, and
+			//3. Update the stock of the given UPC
 			processItems(r_id);
 			
+			//4. Construct and return a representation of Receipt (Purcahse)
 			return new Purchase(r_id, new GregorianCalendar(), 
 								cur_cust.getCustomerID(),
 								//need to display only the last five digit 
@@ -90,6 +85,7 @@ public class OnlinePurchaseCtrl extends TransactionCtrl
 			stmt.close();
 		}
 	}
+	
 	@Override
 	public void cancel() 
 	{
@@ -118,6 +114,13 @@ public class OnlinePurchaseCtrl extends TransactionCtrl
 		cur_cust = new AuthenCtrl(cid, pswd).authenticate();
 	}
 	
+	/**
+	 * Calculate the expected delivery date
+	 * @return
+	 * @throws ClassNotFoundException
+	 * @throws IOException
+	 * @throws SQLException
+	 */
 	private GregorianCalendar expectDelivery() 
 			throws ClassNotFoundException, IOException, SQLException
 	{
@@ -142,6 +145,7 @@ public class OnlinePurchaseCtrl extends TransactionCtrl
 			stmt.close();
 		}
 	}
+	
 	/**
 	 * process the PurchaseItem table:
 	 * insert new entry for each item in the items instance field

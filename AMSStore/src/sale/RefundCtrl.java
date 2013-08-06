@@ -10,6 +10,8 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Map.Entry;
 
+import sale.Item.GENRE;
+import sale.Item.ITEM_TYPE;
 import sale.Receipt.PAYMENT_METHOD;
 import util.JDBCConnection;
 
@@ -99,7 +101,57 @@ public class RefundCtrl extends TransactionCtrl
 			throws SQLException, ClassNotFoundException, IOException
 	{
 		if(status)
-			return super.addItem(upc, qty);
+		{
+			if(qty <= 0)
+			//sanity check
+				throw new IOException("Quantity cannot be less than or equal" +
+									  " to 0.");
+				
+			if(this.conn == null)
+				this.conn = JDBCConnection.getConnection();
+			
+			PreparedStatement stmt = conn.prepareStatement(
+											"SELECT * " +
+											"FROM Item " +
+											"WHERE upc = " + upc);
+			try
+			{
+				ResultSet result = stmt.executeQuery(); 
+				if(result.next())
+				//expecting only 1 tuple is returned
+				{
+					String the_upc = result.getString(Item.UPC_IND);
+					
+					String title = result.getString(Item.TITLE_IND);
+					
+					ITEM_TYPE type = Item.translateType(result.getString(
+																Item.TYPE_IND));
+					
+					GENRE category = Item.translateGenre(result.getString(
+															Item.CATEGORY_IND));
+
+					String company = result.getString(Item.COMPANY_IND);
+						
+					String year = result.getString(Item.YEAR_IND);
+						
+					int price = (int)result.getDouble(Item.PRICE_IND) * 100;
+						
+					//adding this item item to the cart and returns it
+					Item item = new Item(the_upc, title, type, category, company, 
+										 year, price);
+					items.put(item, new Integer(qty));
+					return item;
+				}
+				else
+				//item with the specified upc is not found
+					throw new SQLException("Item with upc " + upc + 
+											"cannot be found.");
+			}
+			finally
+			{
+				stmt.close();
+			}
+		}
 		else
 			return null;
 	}
