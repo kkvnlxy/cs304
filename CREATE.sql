@@ -89,23 +89,27 @@ end if;
 =======
 CREATE SEQUENCE ReceiptID_SEQ
 start with 1
-MAXVALUE 9999999999;
+MAXVALUE 999999999;
 CREATE or REPLACE TRIGGER ReceiptID_TG
 before insert on Purchase
 for each row
 begin
-	select to_char(ReceiptId_SEQ.nextval) into :new.receiptID from dual;
+	select concat('P', to_char(ReceiptId_SEQ.nextval)) into :new.receiptID from dual;
 end;
 /
 
 CREATE SEQUENCE RetID_SEQ
 start with 1
-MAXVALUE 9999999999;
+MAXVALUE 999999999;
 CREATE OR REPLACE TRIGGER RetID_TG
 before insert on Refund
 for each row
 begin
+<<<<<<< HEAD
 	select to_char(RetID_SEQ.nextval) into :new.retID from dual;
 >>>>>>> 71fb19bbaa32a269ad8dcb779bb4e5b2865c2413
+=======
+	select concat('R', to_char(RetID_SEQ.nextval)) into :new.retID from dual;
+>>>>>>> 8c18eeee4d7f87ce2058bc5b9e141432a095e921
 end;
 /

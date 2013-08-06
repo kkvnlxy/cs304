@@ -14,6 +14,11 @@ import util.JDBCConnection;
 
 public class StorePurchaseCtrl extends TransactionCtrl
 {
+	public StorePurchaseCtrl()
+	{
+		super();
+	}
+	
 	/*
 	 **********************************************
 	 * inheriting abstract methods:
@@ -24,7 +29,7 @@ public class StorePurchaseCtrl extends TransactionCtrl
 	 * @author kevin
 	 */
 	@Override
-	public Receipt process(String card_num, GregorianCalendar exp_date) 
+ 	public Receipt process(String card_num, GregorianCalendar exp_date) 
 			throws SQLException, ClassNotFoundException, IOException
 	{
 		if(this.conn == null)
