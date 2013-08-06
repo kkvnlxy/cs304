@@ -82,7 +82,7 @@ COMPUTE SUM LABEL Total OF "Total Value" ON CATEGORY
 COMPUTE SUM LABEL "Total Daily Sales" OF "Total Value" ON REPORT
 SELECT I.upc, I.category, I.price AS "Unit Price", PI.quantity AS "Units", I.price * PI.quantity AS "Total Value"
 FROM Purchase P, PurchaseItem PI, Item I
-WHERE P.receiptId = PI.receiptId AND PI.upc = I.upc AND P.pDate = to_date('12-08-2013', 'dd-mm-yyyy').
+WHERE P.receiptId = PI.receiptId AND PI.upc = I.upc AND P.pDate = to_date('12-08-2013', 'dd-mm-yyyy')
 ORDER BY I.category;
 
 
@@ -95,11 +95,15 @@ ORDER BY SUM(PI.quantity) DESC LIMIT n_input;
 -- we additionally need title, company, current stock.  We have SUM(PI.quantity) = copies sold, so that's good.
 
 --Angela finished TOPNItem
+SELECT *
+FROM(
 SELECT I.UPC, I.title, I.company, I.stock, SUM(PI.quantity) AS "Total Units"
 FROM Purchase P, PurchaseItem PI, Item I
 WHERE P.pDate = to_date('12-08-2013', 'dd-mm-yyyy') AND P.receiptId = PI.receiptId AND PI.quantity > 0 AND I.UPC = PI.UPC
 GROUP BY I.UPC, I.title, I.company, I.stock
-ORDER BY "Total Units" DESC;
+ORDER BY "Total Units" DESC)
+WHERE ROWNUM <= 4
+ORDER BY ROWNUM;
 
 -- For each transaction, make sure to check errors and produce appropriate messages for the user.
 
