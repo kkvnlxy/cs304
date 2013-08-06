@@ -60,11 +60,11 @@ public class OnlinePurchaseCtrl extends TransactionCtrl
 										  "expectedDate)" +
 					"VALUES (?, ?, ?, ?, ?)",
 					new String[]{"receiptId"});
-			stmt.setDate(1, new Date(Calendar.getInstance().DATE));
+			stmt.setDate(1, new Date(Calendar.getInstance().getTimeInMillis()));
 			stmt.setString(2, cur_cust.getCustomerID());
 			stmt.setString(3, card_num);
-			stmt.setDate(4, new Date(exp_date.DATE));
-			stmt.setDate(5, new Date(expt_date.DATE));
+			stmt.setDate(4, new Date(exp_date.getTimeInMillis()));
+			stmt.setDate(5, new Date(expt_date.getTimeInMillis()));
 			
 			int count = stmt.executeUpdate();
 			if(count != 1)

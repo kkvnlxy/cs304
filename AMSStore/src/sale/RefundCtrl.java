@@ -122,7 +122,7 @@ public class RefundCtrl extends TransactionCtrl
 			//check if the supplied parameters are same as the one in database
 			if((method == PAYMENT_METHOD.CREDIT_CARD) && //short circuit
 			   (!purc.getCardNum().equals(card_num) ||
-				purc.getExprDate().DATE != exp_date.DATE))//TODO: testing needed
+				purc.getExprDate().getTimeInMillis() != exp_date.getTimeInMillis()))
 				return null;
 			//else if it is cash, don't care what the credit card is supplied
 
@@ -135,7 +135,8 @@ public class RefundCtrl extends TransactionCtrl
 								"INSERT INTO Refund(rDate, receiptId) " +
 								"VALUES (?, ?)", 
 								new String[] {"retid"});
-				stmt.setDate(1, new Date(Calendar.getInstance().DATE));
+				stmt.setDate(1, new Date(Calendar.getInstance().
+															getTimeInMillis()));
 				stmt.setString(2, purc.getRcptId());
 				int count = stmt.executeUpdate();
 				if(count != 1)
