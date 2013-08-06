@@ -89,3 +89,20 @@ begin
 	select concat('R', to_char(RetID_SEQ.nextval)) into :new.retID from dual;
 end;
 /
+
+
+-------------------------------------------------
+--Drop:
+-------------------------------------------------
+drop sequence receiptid_seq;
+drop sequence retid_seq;
+drop trigger receiptid_tg;
+drop trigger retid_tg;
+drop table leadsinger;
+drop table hassong;
+drop table item;
+drop table purchaseitem;
+drop table refunditem;
+drop table purchase;
+drop table refund;
+drop table customer;
