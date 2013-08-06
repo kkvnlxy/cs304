@@ -68,25 +68,6 @@ CREATE TABLE RefundItem(
 -------------------------------------------------
 --Trigger
 -------------------------------------------------
-<<<<<<< HEAD
-CREATE SEQUENCE RECEIPT_ID_SQ
-INCREMENT BY 1
-START WITH 10
-MAXVALUE 999999999
-MINVALUE 1
-CYCLE
-NOCACHE
-ORDER;
-
-CREATE TRIGGER RECEIPT_ID_GEN
-AFTER INSERT ON Purchase
-FOR EACH STATEMENT 
-if :NEW. "receiptId" is null then
-SELECT concact ('P', to_char(RECEIPT_ID_SQ.nextval, '000000000'))
-into :NEW. "receiptId"
-from dual;
-end if;
-=======
 CREATE SEQUENCE ReceiptID_SEQ
 start with 1
 MAXVALUE 999999999;
@@ -105,8 +86,23 @@ CREATE OR REPLACE TRIGGER RetID_TG
 before insert on Refund
 for each row
 begin
-	select to_char(RetID_SEQ.nextval) into :new.retID from dual;
-=======
 	select concat('R', to_char(RetID_SEQ.nextval)) into :new.retID from dual;
 end;
 /
+
+
+-------------------------------------------------
+--Drop:
+-------------------------------------------------
+drop sequence receiptid_seq;
+drop sequence retid_seq;
+drop trigger receiptid_tg;
+drop trigger retid_tg;
+drop table leadsinger;
+drop table hassong;
+drop table item;
+drop table purchaseitem;
+drop table refunditem;
+drop table purchase;
+drop table refund;
+drop table customer;

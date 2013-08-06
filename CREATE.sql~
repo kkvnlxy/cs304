@@ -31,7 +31,7 @@ CREATE TABLE Customer(
 	phone		CHAR(12) not null);
 
 CREATE TABLE Purchase(
-	receiptId	CHAR(10) not null PRIMARY KEY,
+	receiptId	CHAR(10) PRIMARY KEY,
 	pDate		DATE not null,
 	cid		VARCHAR(16),
 	cardNum		CHAR(16),
