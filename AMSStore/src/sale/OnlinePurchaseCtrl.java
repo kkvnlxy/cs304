@@ -6,6 +6,7 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Map.Entry;
@@ -57,7 +58,8 @@ public class OnlinePurchaseCtrl extends TransactionCtrl
 										  "cardNum, " +
 										  "expiryDate, " +
 										  "expectedDate)" +
-					"VALUES (?, ?, ?, ?, ?)");
+					"VALUES (?, ?, ?, ?, ?)",
+					new String[]{"receiptId"});
 			stmt.setDate(1, new Date(Calendar.getInstance().DATE));
 			stmt.setString(2, cur_cust.getCustomerID());
 			stmt.setString(3, card_num);
@@ -74,7 +76,6 @@ public class OnlinePurchaseCtrl extends TransactionCtrl
 				throw new SQLException("No Receipt ID can be generated.");
 			String r_id = result.getString(1);//retrieve the receiptId
 			
-//			stmt.close();//TODO: need?
 			processItems(r_id);
 			
 			return new Purchase(r_id, new GregorianCalendar(), 
@@ -115,7 +116,6 @@ public class OnlinePurchaseCtrl extends TransactionCtrl
 					FileNotFoundException, IOException
 	{
 		cur_cust = new AuthenCtrl(cid, pswd).authenticate();
-		//TODO need further operation??
 	}
 	
 	private GregorianCalendar expectDelivery() 
@@ -165,21 +165,22 @@ public class OnlinePurchaseCtrl extends TransactionCtrl
 			for(Entry<Item, Integer> each : items.entrySet())
 			{
 				//adding entry to PurchaseItem table:
-				int count = stmt.executeUpdate(
-								"INSERT INTO PurchaseItem " +
-										"VALUES(" + r_id +", " + 
+				String sql = 	"INSERT INTO PurchaseItem " +
+								"VALUES(" + r_id +", " + 
 										each.getKey().getUPC() + ", " +
-										each.getValue().intValue() + ")");
+										each.getValue().intValue() + ")";
+				stmt = conn.prepareStatement(sql);
+				int count = stmt.executeUpdate();
 				if(count != 1)
 				//sanity check
 					throw new SQLException("This item has already been " +
 									   	   "associated with the purchase.");
 
 				//updating stock in Item table:
-				count = stmt.executeUpdate(
-							"UPDATE Item " +
-							"SET stock = stock - " + each.getValue().intValue() +
-							"WHERE upc = " + each.getKey().getUPC());
+				sql = 	"UPDATE Item " +
+						"SET stock = stock - " + each.getValue().intValue() + " " + 
+						"WHERE upc = " + each.getKey().getUPC();
+				count = stmt.executeUpdate(sql);
 				if(count != 1)
 				//sanity check
 					throw new SQLException("Fatal error: Duplicate UPC.");

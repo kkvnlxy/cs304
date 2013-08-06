@@ -56,7 +56,7 @@ public class StorePurchaseCtrl extends TransactionCtrl
 							"INSERT INTO Purchase (pDate) " +
 							"VALUES (?)",
 							//receiptId is auto-generated attribute
-							Statement.RETURN_GENERATED_KEYS);
+							new String[]{"receiptId"});
 				stmt.setDate(1, new Date(Calendar.getInstance().DATE));
 			}
 			else
@@ -66,7 +66,7 @@ public class StorePurchaseCtrl extends TransactionCtrl
 							"INSERT INTO Purchase (pDate, cardNum, expiryDate) " +
 							"VALUES (?, ?, ?)",
 							//receiptId is auto-generated attribute
-							Statement.RETURN_GENERATED_KEYS);
+							new String[]{"receiptId"});
 				stmt.setDate(1, new Date(Calendar.getInstance().DATE));
 				stmt.setString(2, card_num);
 				stmt.setDate(3, new Date(exp_date.DATE));
@@ -80,8 +80,7 @@ public class StorePurchaseCtrl extends TransactionCtrl
 			if(!result.next())
 			//sanity check
 				throw new SQLException("No Receipt ID can be generated.");
-			String r_id = result.getString(1);//retrieve the receiptId		
-//			stmt.close();//TODO need?
+			String r_id = result.getString(1);
 			
 			processItems(r_id);
 			
@@ -127,27 +126,29 @@ public class StorePurchaseCtrl extends TransactionCtrl
 	{
 		if(conn == null)
 			conn = JDBCConnection.getConnection();
+		
 		PreparedStatement stmt = null;
 		try
 		{
 			for(Entry<Item, Integer> each : items.entrySet())
 			{
 				//adding entry to PurchaseItem table:
-				int count = stmt.executeUpdate(
-								"INSERT INTO PurchaseItem " +
-								"VALUES(" + r_id +", " + 
-										each.getKey().getUPC() + ", " +
-										each.getValue().intValue() + ")");
+				String sql = "INSERT INTO PurchaseItem " +
+							 "VALUES('" + r_id +"', " + 
+							 		"'" + each.getKey().getUPC() + "', " +
+							 		"'" + each.getValue().intValue() + "')";
+				stmt = conn.prepareStatement(sql);
+				int count = stmt.executeUpdate();
 				if(count != 1)
 				//sanity check
 					throw new SQLException("This item has already been " +
 									   	   "associated with the purchase.");
 
 				//updating stock in Item table:
-				count = stmt.executeUpdate(
-							"UPDATE Item " +
-							"SET stock = stock - " + each.getValue().intValue() +
-							"WHERE upc = " + each.getKey().getUPC());
+				sql = 	"UPDATE Item " +
+						"SET stock = stock - " + each.getValue().intValue() + " " +
+						"WHERE upc = '" + each.getKey().getUPC() + "'";
+				count = stmt.executeUpdate(sql);
 				if(count != 1)
 				//sanity check
 					throw new SQLException("Fatal error: Duplicate UPC.");

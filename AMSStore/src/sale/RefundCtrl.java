@@ -134,7 +134,7 @@ public class RefundCtrl extends TransactionCtrl
 				stmt = conn.prepareStatement(
 								"INSERT INTO Refund(rDate, receiptId) " +
 								"VALUES (?, ?)", 
-								Statement.RETURN_GENERATED_KEYS);
+								new String[] {"retid"});
 				stmt.setDate(1, new Date(Calendar.getInstance().DATE));
 				stmt.setString(2, purc.getRcptId());
 				int count = stmt.executeUpdate();
@@ -146,7 +146,6 @@ public class RefundCtrl extends TransactionCtrl
 				//sanity check
 					throw new SQLException("No Refund ID can be generated.");
 				String ret_id = result.getString(1);//retrieve the receiptId
-				//stmt.close();//TODO: need?
 				
 				//2. With the retid, inserting entries into RefundItem table,
 				//3. Update the stock
@@ -238,21 +237,22 @@ public class RefundCtrl extends TransactionCtrl
 		{
 			for(Entry<Item, Integer> each : this.items.entrySet())
 			{
-				int count = stmt.executeUpdate(
-								"INSERT INTO RefundItem " +
-								"VALUES(" + ret_id + ", " + 
-										each.getKey().getUPC() + ", " + 
-										each.getValue().intValue() + ")" );
+				String sql = "INSERT INTO RefundItem " +
+							 "VALUES(" + ret_id + ", " + 
+							 			each.getKey().getUPC() + ", " + 
+							 			each.getValue().intValue() + ")";
+				stmt = conn.prepareStatement(sql);
+				int count = stmt.executeUpdate();
 				if(count != 1)
 					//sanity check
 						throw new SQLException("This item has already been " +
 										   	   "associated with the purchase.");
 				
 				//updating stock in Item table:
-				count = stmt.executeUpdate(
-							"UPDATE Item " +
-							"SET stock = stock + " + each.getValue().intValue() +
-							"WHERE upc = " + each.getKey().getUPC());
+				sql = 	"UPDATE Item " +
+						"SET stock = stock + " + each.getValue().intValue() + " " +
+						"WHERE upc = " + each.getKey().getUPC();
+				count = stmt.executeUpdate();
 				if(count != 1)
 				//sanity check
 					throw new SQLException("Fatal error: Duplicate UPC.");
