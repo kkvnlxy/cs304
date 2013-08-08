@@ -12,7 +12,7 @@ import java.lang.EnumConstantNotPresentException;
 public class Item 
 {
 	protected Item(	String upc, String title, ITEM_TYPE type, GENRE category,
-					String comp, String year, int price)
+					String comp, String year, int price, int stk)
 	{
 		this.UPC = upc;
 		this.TITLE = title;
@@ -21,6 +21,7 @@ public class Item
 		this.COMPANY = comp;
 		this.YEAR = year;
 		this.PRICE_IN_CENT = price;
+		this.STOCK = stk;
 	}
 	
 	/*
@@ -69,6 +70,10 @@ public class Item
 	final public double getPrice()
 	{
 		return (double)this.PRICE_IN_CENT / (double)100;
+	}
+	final public int setStock()
+	{
+		return this.STOCK;
 	}
 
 	/*
@@ -144,6 +149,7 @@ public class Item
 	final private String COMPANY;
 	final private String YEAR; // or GregorianCalendar?
 	final private int PRICE_IN_CENT; // int vs double?
+	final private int STOCK;
 	
 	//static constant for attribute indexing.
 	//ONLY USE THESE WHEN YOU ARE ISSUING "SELECT * FROM Item" SQL

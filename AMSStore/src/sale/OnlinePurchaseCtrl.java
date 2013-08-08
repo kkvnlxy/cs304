@@ -135,10 +135,16 @@ public class OnlinePurchaseCtrl extends TransactionCtrl
 		try
 		{
 			ResultSet result = stmt.executeQuery();
-			int days = result.getInt(0) / JDBCConnection.MAX_DAILY_CAPACITY;
-			GregorianCalendar expt_date = new GregorianCalendar();
-			expt_date.add(Calendar.DATE, days);
-			return expt_date;
+			if(result.next())
+			{
+				int days = result.getInt(1) / JDBCConnection.MAX_DAILY_CAPACITY;
+				GregorianCalendar expt_date = new GregorianCalendar();
+				expt_date.add(Calendar.DATE, days);
+				return expt_date;
+			}
+			else
+			//no outstanding order, then expected date is today
+				return new GregorianCalendar();
 		}
 		finally
 		{
@@ -170,9 +176,9 @@ public class OnlinePurchaseCtrl extends TransactionCtrl
 			{
 				//adding entry to PurchaseItem table:
 				String sql = 	"INSERT INTO PurchaseItem " +
-								"VALUES(" + r_id +", " + 
-										each.getKey().getUPC() + ", " +
-										each.getValue().intValue() + ")";
+								"VALUES('" + r_id +"', '" + 
+										each.getKey().getUPC() + "', '" +
+										each.getValue().intValue() + "')";
 				stmt = conn.prepareStatement(sql);
 				int count = stmt.executeUpdate();
 				if(count != 1)

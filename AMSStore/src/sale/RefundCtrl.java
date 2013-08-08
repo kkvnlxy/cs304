@@ -135,10 +135,12 @@ public class RefundCtrl extends TransactionCtrl
 					String year = result.getString(Item.YEAR_IND);
 						
 					int price = (int)result.getDouble(Item.PRICE_IND) * 100;
+					
+					int stock = result.getInt(Item.STOCK_IND);
 						
 					//adding this item item to the cart and returns it
 					Item item = new Item(the_upc, title, type, category, company, 
-										 year, price);
+										 year, price, stock);
 					items.put(item, new Integer(qty));
 					return item;
 				}

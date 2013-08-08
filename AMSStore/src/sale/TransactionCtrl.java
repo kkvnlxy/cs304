@@ -49,7 +49,8 @@ public abstract class TransactionCtrl
 		PreparedStatement stmt = conn.prepareStatement(
 										"SELECT * " +
 										"FROM Item " +
-										"WHERE upc = " + upc);
+										"WHERE upc = ?");
+		stmt.setString(1, upc);
 		try
 		{
 			ResultSet result = stmt.executeQuery(); 
@@ -73,7 +74,7 @@ public abstract class TransactionCtrl
 				int price = (int)result.getDouble(Item.PRICE_IND) * 100;
 				
 				int stk = result.getInt(Item.STOCK_IND);
-				if(stk == 0)
+				if(stk < qty)
 				//sanity check
 					//TODO cannot think of what is the appropriate exception,
 					//		use the most general one for the moment
@@ -82,14 +83,14 @@ public abstract class TransactionCtrl
 				
 				//adding this item item to the cart and returns it
 				Item item = new Item(the_upc, title, type, category, company, 
-									 year, price);
+									 year, price, stk);
 				items.put(item, new Integer(qty));
 				return item;
 			}
 			else
 			//item with the specified upc is not found
 				throw new SQLException("Item with upc " + upc + 
-										"cannot be found.");
+										" cannot be found.");
 		}
 		finally
 		{
