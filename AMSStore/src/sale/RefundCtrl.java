@@ -158,7 +158,8 @@ public class RefundCtrl extends TransactionCtrl
 												 title, type, category, company,
 												 year, price, stock);
 					items.put(item, new Integer(qty));
-					this.subtotal += price * qty;
+					upc_item_map.put(upc, item);
+					this.grandtotal += price * qty;
 					return item;
 				}
 				else

@@ -23,7 +23,7 @@ public abstract class TransactionCtrl
 	protected TransactionCtrl()
 	{
 		this.items = new HashMap<Item, Integer>();
-		this.subtotal = 0;
+		this.grandtotal = 0;
 	}
 	
 	/**
@@ -86,7 +86,8 @@ public abstract class TransactionCtrl
 				Item item = new Item(the_upc, title, type, category, company, 
 									 year, price, stk);
 				items.put(item, new Integer(qty));
-				this.subtotal += price * qty;
+				upc_item_map.put(upc, item);
+				this.grandtotal += price * qty;
 				return item;
 			}
 			else
@@ -120,12 +121,28 @@ public abstract class TransactionCtrl
 	 */
 	public abstract void cancel();
 	
-	final public int getSubtotal()
+	final public int getGrandTotal()
 	{
-		return this.subtotal;
+		return this.grandtotal;
 	}
 	
+	/**
+	 * EXTREAM CAUTION: NO ERROR CHECKING!!!
+	 * @param upc
+	 * @return
+	 */
+	public int getSubTotal(String upc)
+	{
+		Item target = upc_item_map.get(upc);
+		
+		int unit_price = target.getPriceInCents();
+		int qty = items.get(target).intValue();
+		
+		return unit_price * qty;
+	}
+	
+	protected HashMap<String, Item> upc_item_map;
 	protected HashMap<Item, Integer> items;
 	protected Connection conn;
-	protected int subtotal;
+	protected int grandtotal;
 }
