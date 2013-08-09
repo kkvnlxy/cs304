@@ -13,7 +13,8 @@ public class StorePurchaseTest
 	 * @throws NumberFormatException 
 	 */
 	public static void main(String[] args)
-			throws NumberFormatException, ClassNotFoundException, SQLException, IOException 
+			throws NumberFormatException, ClassNotFoundException, SQLException, 
+					IOException, Exception 
 	{
 		StorePurchaseCtrl ctrl = new StorePurchaseCtrl();
 		

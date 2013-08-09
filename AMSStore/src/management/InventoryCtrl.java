@@ -36,10 +36,10 @@ public class InventoryCtrl
 	 * @throws ClassNotFoundException 
 	 */
 	public void createItem(	String upc, String title, ITEM_TYPE type, 
-			GENRE category, String company, String year, 
-			int price_incent, int initStk)
-					throws SQLException, ClassNotFoundException, IOException
-					{
+							GENRE category, String company, String year, 
+							int price_incent, int initStk)
+			throws SQLException, ClassNotFoundException, IOException
+	{
 		if(this.conn == null)
 			this.conn = JDBCConnection.getConnection();
 
@@ -56,7 +56,7 @@ public class InventoryCtrl
 		stmt.setString(4, Item.translateGenre(category));
 		stmt.setString(5, company);
 		stmt.setString(6, year);
-		stmt.setDouble(7, (double)price_incent / 100.0);//TODO setDouble/setFloat?
+		stmt.setDouble(7, (double)price_incent / 100.0);
 		stmt.setInt(8, initStk);
 
 		try
@@ -67,7 +67,7 @@ public class InventoryCtrl
 		{
 			stmt.close();
 		}
-					}
+	}
 
 	/**
 	 * This method updates (increments) the stock attribute in the Item table

@@ -1,3 +1,20 @@
+-------------------------------------------------
+--Drop:
+-------------------------------------------------
+drop sequence receiptid_seq;
+drop sequence retid_seq;
+drop trigger receiptid_tg;
+drop trigger retid_tg;
+drop table leadsinger;
+drop table hassong;
+drop table purchaseitem;
+drop table refunditem;
+drop table refund;
+drop table purchase;
+drop table item;
+drop table customer;
+
+
 CREATE TABLE Item(
 	upc 	CHAR(4) not null PRIMARY KEY,
 	title	VARCHAR(50) not null,
@@ -90,19 +107,3 @@ begin
 end;
 /
 
-
--------------------------------------------------
---Drop:
--------------------------------------------------
-drop sequence receiptid_seq;
-drop sequence retid_seq;
-drop trigger receiptid_tg;
-drop trigger retid_tg;
-drop table leadsinger;
-drop table hassong;
-drop table purchaseitem;
-drop table refunditem;
-drop table refund;
-drop table purchase;
-drop table item;
-drop table customer;

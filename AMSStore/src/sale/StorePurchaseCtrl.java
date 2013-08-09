@@ -19,11 +19,6 @@ public class StorePurchaseCtrl extends TransactionCtrl
 		super();
 	}
 	
-	/*
-	 **********************************************
-	 * inheriting abstract methods:
-	 **********************************************
-	 */
 	/**
 	 * @pre Integer value in the items have to be greater than 0
 	 * @author kevin
@@ -35,6 +30,7 @@ public class StorePurchaseCtrl extends TransactionCtrl
 		if(this.conn == null)
 			this.conn = JDBCConnection.getConnection();
 		
+		//0. Determine whether this purchase is cash or credit card:
 		//true if it is cash purchase, false if credit card
 		boolean cash_pur = 	(card_num == null && exp_date == null) ||
 							(card_num.equals(""));
@@ -43,10 +39,8 @@ public class StorePurchaseCtrl extends TransactionCtrl
 		
 		try
 		{
-			/*
-			 * process the Purchase table:
-			 * insert an new entry and retrieve the auto-generated receiptId
-			 */
+			//1. Process the Purchase table:
+			//insert an new entry and retrieve the auto-generated receiptId
 			//preparing the statement
 			if(cash_pur)
 			{
@@ -54,12 +48,11 @@ public class StorePurchaseCtrl extends TransactionCtrl
 							//cash purchase: cardNum and expiryDate have to be 
 							//null, not empty string (ie only setting pDate)
 							"INSERT INTO Purchase (pDate) " +
-							"VALUES (to_date('?-?-?', 'dd-mm-yyyy'))",
+							"VALUES (?)",
 							//receiptId is auto-generated attribute
 							new String[]{"receiptId"});
-				stmt.setString(1, "" + Calendar.getInstance().DAY_OF_MONTH);
-				stmt.setString(2, "" + Calendar.getInstance().MONTH);
-				stmt.setString(3, "" + Calendar.getInstance().YEAR);
+				stmt.setDate(1, new Date(Calendar.getInstance().
+															getTimeInMillis()));
 			}
 			else
 			//credit card purchase
@@ -69,24 +62,26 @@ public class StorePurchaseCtrl extends TransactionCtrl
 							"VALUES (?, ?, ?)",
 							//receiptId is auto-generated attribute
 							new String[]{"receiptId"});
-				stmt.setDate(1, new Date(Calendar.getInstance().DATE));
+				stmt.setDate(1, new Date(Calendar.getInstance().
+															getTimeInMillis()));
 				stmt.setString(2, card_num);
-				stmt.setDate(3, new Date(exp_date.DATE));
+				stmt.setDate(3, new Date(exp_date.getTimeInMillis()));
 			}
-			//execute the statement and get the auto-generated receiptId
 			int count = stmt.executeUpdate();
 			if(count != 1)
 			//sanity check
 				throw new SQLException("Fail to create a Purchase.");
-			ResultSet result = stmt.getGeneratedKeys();
+			ResultSet result = stmt.getGeneratedKeys();//get the auto-gen key
 			if(!result.next())
 			//sanity check
 				throw new SQLException("No Receipt ID can be generated.");
 			String r_id = result.getString(1);
 			
+			//2. Process the PurchaseItem table with the receiptID and 
+			//3. Update the stock of the given upc
 			processItems(r_id);
 			
-			//last, construct a representation of the Puchase entry
+			//4. Construct a representation of the Puchase entry
 			if(cash_pur)
 				return new Purchase(r_id, new GregorianCalendar());
 			else
@@ -101,6 +96,7 @@ public class StorePurchaseCtrl extends TransactionCtrl
 			stmt.close();
 		}
 	}
+	
 	/**
 	 * @author kevin
 	 */
