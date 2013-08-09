@@ -23,6 +23,7 @@ public abstract class TransactionCtrl
 	protected TransactionCtrl()
 	{
 		this.items = new HashMap<Item, Integer>();
+		this.subtotal = 0;
 	}
 	
 	/**
@@ -71,7 +72,7 @@ public abstract class TransactionCtrl
 				
 				String year = result.getString(Item.YEAR_IND);
 				
-				int price = (int)result.getDouble(Item.PRICE_IND) * 100;
+				int price = (int)(result.getDouble(Item.PRICE_IND) * 100.0);
 				
 				int stk = result.getInt(Item.STOCK_IND);
 				if(stk < qty)
@@ -85,6 +86,7 @@ public abstract class TransactionCtrl
 				Item item = new Item(the_upc, title, type, category, company, 
 									 year, price, stk);
 				items.put(item, new Integer(qty));
+				this.subtotal += price * qty;
 				return item;
 			}
 			else
@@ -118,6 +120,12 @@ public abstract class TransactionCtrl
 	 */
 	public abstract void cancel();
 	
+	final public int getSubtotal()
+	{
+		return this.subtotal;
+	}
+	
 	protected HashMap<Item, Integer> items;
 	protected Connection conn;
+	protected int subtotal;
 }

@@ -143,7 +143,7 @@ public class RefundCtrl extends TransactionCtrl
 						
 					String year = result.getString(9);
 						
-					int price = (int)result.getDouble(10) * 100;
+					int price = (int)(result.getDouble(10) * 100.0);
 					
 					int stock = result.getInt(11);
 					
@@ -158,6 +158,7 @@ public class RefundCtrl extends TransactionCtrl
 												 title, type, category, company,
 												 year, price, stock);
 					items.put(item, new Integer(qty));
+					this.subtotal += price * qty;
 					return item;
 				}
 				else
