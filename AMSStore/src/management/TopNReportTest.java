@@ -32,6 +32,12 @@ public class TopNReportTest
 		
 		ArrayList<TopNReportItem> rep_lst = report.getList();
 		
+		if(rep_lst.size() == 0)
+		{
+			System.out.println("empty report");
+			return;
+		}
+		
 		for(int row = 0; row < rep_lst.size(); row++)
 		{
 			TopNReportItem cur_item = rep_lst.get(row);
