@@ -123,14 +123,16 @@ insert into purchase values ('P000000008', to_date('12-08-2013', 'dd-mm-yyyy'), 
 ---------------------------------------------------------------
 -- ISP 1 item
 insert into purchaseitem values ('P000000001', '0004', '1');
+--insert into purchaseitem values ('P1', '0004', '1');
 --already returned
 insert into purchaseitem values ('P000000001', '0009', '1');
+--insert into purchaseitem values ('P1', '0009', '1');
 -- ISP 2 items [come back to return one of '0002' in cash]
 insert into purchaseitem values ('P000000002', '0002', '2');
 insert into purchaseitem values ('P000000002', '0001', '1');
 -- ISP 1 item [come back to return in CC]
 insert into purchaseitem values ('P000000003', '0002', '5');
---insert into purchaseitem values ('P2', '0002', '5');
+--insert into purchaseitem values ('P3', '0002', '5');
 -- OP 2 items tries to return 
 insert into purchaseitem values ('P000000005', '0003', '1');
 insert into purchaseitem values ('P000000005', '0009', '1');
