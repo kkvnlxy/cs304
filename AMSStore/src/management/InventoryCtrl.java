@@ -208,9 +208,11 @@ public class InventoryCtrl
 	 * @param top_n
 	 * @return entity object TopNReport will be return
 	 * @throws SQLException
+	 * @throws IOException 
+	 * @throws ClassNotFoundException 
 	 */
 	public TopNReport genTopNReport(GregorianCalendar date, int top_n)
-			throws SQLException
+			throws SQLException, ClassNotFoundException, IOException
 			{
 		if(this.conn == null)
 			this.conn = JDBCConnection.getConnection();
@@ -234,7 +236,7 @@ public class InventoryCtrl
 			if(!result.next())
 				throw new SQLException("Could Not Produce Report");
 			//TODO:
-			else return new DailyReport();
+			else return new TopNReport();
 		}
 		finally
 		{
