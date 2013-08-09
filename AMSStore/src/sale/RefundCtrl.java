@@ -36,10 +36,10 @@ public class RefundCtrl extends TransactionCtrl
 		if(conn == null)
 			conn = JDBCConnection.getConnection();
 		
-		PreparedStatement stmt = conn.prepareStatement(
-									"SELECT * " +
-									"FROM Purchase" +
-									"WHERE receiptId = " + pur_id);
+		String sql = "SELECT * " +
+					 "FROM Purchase " +
+					 "WHERE receiptId = '" + pur_id + "'";
+		PreparedStatement stmt = conn.prepareStatement(sql);
 		try
 		{
 			ResultSet result = stmt.executeQuery();
@@ -49,6 +49,7 @@ public class RefundCtrl extends TransactionCtrl
 			{
 				String rcpt_id = result.getString(Purchase.RID_IND);
 				
+				Date temp = result.getDate(Purchase.PDATE_IND);
 				GregorianCalendar pur_date = convert(result.getDate(
 			   										   	   Purchase.PDATE_IND));
 				
@@ -56,6 +57,7 @@ public class RefundCtrl extends TransactionCtrl
 				
 				String card_num = result.getString(Purchase.CARDNUM_IND);
 				
+				temp = result.getDate(Purchase.EXPRDATE_IND);
 				GregorianCalendar expr_date = convert(result.getDate(
 														Purchase.EXPRDATE_IND));
 			
@@ -193,7 +195,16 @@ public class RefundCtrl extends TransactionCtrl
 			if((method == PAYMENT_METHOD.CREDIT_CARD) && //short circuit
 			   (!purc.getCardNum().equals(card_num) ||
 				purc.getExprDate().getTimeInMillis() != exp_date.getTimeInMillis()))
+			{
+				System.out.println("DB   :" + purc.getExprDate().get(Calendar.YEAR) + "-" + 
+						purc.getExprDate().get(Calendar.MONTH) + "-"+ 
+						purc.getExprDate().get(Calendar.DAY_OF_MONTH));//testing
+				System.out.println("GIVEN: " + exp_date.get(Calendar.YEAR) + "-" + 
+						exp_date.get(Calendar.MONTH) + "-"+ 
+						exp_date.get(Calendar.DAY_OF_MONTH));//testing
+				
 				return null;
+			}
 			//else if it is cash, don't care what the credit card is supplied
 
 			PreparedStatement stmt = null;
@@ -271,7 +282,12 @@ public class RefundCtrl extends TransactionCtrl
 		Calendar deadline = this.purc.getPDate();
 		deadline.add(Calendar.DATE, MAX_RETURN_DAYS);
 		
-		this.status = deadline.compareTo(Calendar.getInstance()) >= 0;
+		System.out.println("deadline: " + deadline.get(Calendar.YEAR) + "-" + 
+							deadline.get(Calendar.MONTH) + "-"+ 
+							deadline.get(Calendar.DAY_OF_MONTH));//testing
+		
+		boolean temp = deadline.compareTo(Calendar.getInstance()) >= 0;
+		this.status = temp;
 	}
 	/**
 	 * This is a helper method. You may get a lot of warning from this method,
@@ -282,9 +298,14 @@ public class RefundCtrl extends TransactionCtrl
 	 */
 	private GregorianCalendar convert(Date date)
 	{
-		return new GregorianCalendar(date.getYear(), date.getMonth(),
-									 date.getDay(), date.getHours(), 
-									 date.getMinutes(), date.getSeconds());
+		if(date == null)
+			return null;
+//		return new GregorianCalendar(date.getYear(), date.getMonth(),
+//									 date.getDay());
+		String[] buffer = date.toString().split("-");
+		return new GregorianCalendar(Integer.parseInt(buffer[0]), 
+									 Integer.parseInt(buffer[1]), 
+									 Integer.parseInt(buffer[2]));
 	}
 	/**
 	 * process the RefundItem table:
@@ -309,9 +330,9 @@ public class RefundCtrl extends TransactionCtrl
 			for(Entry<Item, Integer> each : this.items.entrySet())
 			{
 				String sql = "INSERT INTO RefundItem " +
-							 "VALUES(" + ret_id + ", " + 
-							 			each.getKey().getUPC() + ", " + 
-							 			each.getValue().intValue() + ")";
+							 "VALUES('" + ret_id + "', '" + 
+							 			each.getKey().getUPC() + "', '" + 
+							 			each.getValue().intValue() + "')";
 				stmt = conn.prepareStatement(sql);
 				int count = stmt.executeUpdate();
 				if(count != 1)
@@ -322,7 +343,8 @@ public class RefundCtrl extends TransactionCtrl
 				//updating stock in Item table:
 				sql = 	"UPDATE Item " +
 						"SET stock = stock + " + each.getValue().intValue() + " " +
-						"WHERE upc = " + each.getKey().getUPC();
+						"WHERE upc = '" + each.getKey().getUPC() + "'";
+				stmt = conn.prepareStatement(sql);
 				count = stmt.executeUpdate();
 				if(count != 1)
 				//sanity check
