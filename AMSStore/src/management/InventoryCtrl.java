@@ -14,9 +14,11 @@ import java.sql.ResultSet;
 
 import java.sql.SQLException;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 
 import java.util.GregorianCalendar;
+
 
 
 
@@ -334,7 +336,7 @@ public class InventoryCtrl
 
 	 * @param date
 
-	 * @return entity object DailyReport will be return
+	 * @return empty report is returned if report cannot be generated
 
 	 * @throws SQLException
 
@@ -345,64 +347,79 @@ public class InventoryCtrl
 	 */
 
 	public DailyReport genDailyReport(GregorianCalendar date) 
-
 			throws SQLException, ClassNotFoundException, IOException
-
-			{
-
+	{
 		if(this.conn == null)
-
 			this.conn = JDBCConnection.getConnection();
 
-		PreparedStatement stmt = conn.prepareStatement(
-
-				"COLUMN UPC FORMAT A20 " + 
-
-						"BREAK ON CATEGORY ON REPORT " +
-
-						"COMPUTE SUM LABEL Total OF \"Total Value\" ON CATEGORY" +
-
-						"COMPUTE SUM LABEL \"Total Daily Sales\" OF \"Total Value\" ON REPORT" +
-
-						"SELECT I.upc, I.category, I.price AS \"Unit Price\", PI.quantity AS \"Units\", I.price * PI.quantity AS \"Total Value\"" +
-
-						"FROM Purchase P, PurchaseItem PI, Item I" +
-
-						"WHERE P.receiptId = PI.receiptId AND PI.upc = I.upc AND P.pDate = to_date( ? , 'dd-mm-yyyy')" +
-
-				"ORDER BY I.category");
-
-
-
-		stmt.setDate(1, new Date(date.DATE));
-
-
-
+		String sql = "SELECT I.upc, \n" +
+				 	 "       I.category, \n" +
+				 	 "       I.price, \n" +
+				 	 "       PI.quantity, \n" +
+				 	 "       I.price * PI.quantity \n" +
+				 	 "FROM Purchase P, PurchaseItem PI, Item I \n" +
+				 	 "WHERE P.receiptId = PI.receiptId AND \n" +
+				 	 "      PI.upc = I.upc AND \n" +
+				 	 "      P.pDate = ? \n" +
+				 	 "ORDER BY I.category \n";
+		PreparedStatement stmt = conn.prepareStatement(sql);
+		Date temp = new Date(date.get(Calendar.YEAR) - 1900, 
+							 date.get(Calendar.MONTH) - 1, 
+							 date.get(Calendar.DAY_OF_MONTH));
+		stmt.setDate(1, temp);
+		
+		System.out.println(sql);//testing
+		System.out.println("sql.date:" + temp.getYear() + "-" + 
+										 temp.getMonth() + "-" + 
+										 temp.getDay());//testing
+		System.out.println("report date: " + date.get(Calendar.YEAR) + "-" + 
+							date.get(Calendar.MONTH) + "-" + 
+							date.get(Calendar.DAY_OF_MONTH));//testing
+		
 		try
-
 		{
-
 			ResultSet result = stmt.executeQuery();
 
-			if(!result.next())
+			ArrayList<Triple<String, ArrayList<ReportItem>, Double>>
+				tuples = new ArrayList<Triple<String, ArrayList<ReportItem>, Double>>();
+			ArrayList<ReportItem> lst = new ArrayList<ReportItem>();
+			String current_cat = "";
+			while(result.next())
+			{
+				String upc = result.getString(1);
+				String cat = result.getString(2);
+				double price_$ = result.getDouble(3);
+				int qty_sold = result.getInt(4);
+				double total_$ = result.getDouble(5);
 
-				throw new SQLException("Could Not Produce Report");
-
-			//TODO:
-
-			else return new DailyReport();
-
-		}
-
-		finally
-
-		{
-
-			stmt.close();
-
-		}
-
+				ReportItem item = new ReportItem(upc, cat, price_$, qty_sold, total_$);
+				lst.add(item);
+				
+				if(!cat.equals(current_cat))
+				//different category group
+				{
+					current_cat = new String(cat);
+					
+					double cat_total = 0;
+					for(int row = 0; row < lst.size(); row++)
+						cat_total += lst.get(row).getTotalSale();
+					
+					Triple<String, ArrayList<ReportItem>, Double>
+						a_tuple = new Triple<String, ArrayList<ReportItem>, Double>
+										(current_cat, lst, new Double(cat_total));
+					tuples.add(a_tuple);
+					
+					lst = new ArrayList<ReportItem>();//clean up the current lst
+				}
 			}
+			
+			return new DailyReport(tuples);
+		}
+		finally
+		{
+			stmt.close();
+		}
+	}
 
 
 
@@ -423,7 +440,6 @@ public class InventoryCtrl
 	 * @throws ClassNotFoundException 
 
 	 */
-
 	public TopNReport genTopNReport(GregorianCalendar date, int top_n)
 
 			throws SQLException, ClassNotFoundException, IOException
