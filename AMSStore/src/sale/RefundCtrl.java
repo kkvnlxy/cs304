@@ -112,41 +112,57 @@ public class RefundCtrl extends TransactionCtrl
 			
 			PreparedStatement stmt = conn.prepareStatement(
 											"SELECT * " +
-											"FROM Item " +
-											"WHERE upc = " + upc);
+											"FROM PurchaseItem pi, Item i " +
+											"WHERE pi.upc = i.upc AND " +
+												  "receiptID = ? AND " +
+												  "pi.upc = ?");
+			stmt.setString(1, this.purc.getRcptId());
+			stmt.setString(2, upc);
 			try
 			{
 				ResultSet result = stmt.executeQuery(); 
 				if(result.next())
 				//expecting only 1 tuple is returned
 				{
-					String the_upc = result.getString(Item.UPC_IND);
+					//Sorry about using literal here~
+					String receiptID = result.getString(1);
 					
-					String title = result.getString(Item.TITLE_IND);
+					String the_upc = result.getString(2);
 					
-					ITEM_TYPE type = Item.translateType(result.getString(
-																Item.TYPE_IND));
+					int qty_bought = result.getInt(3);
 					
-					GENRE category = Item.translateGenre(result.getString(
-															Item.CATEGORY_IND));
+					String title = result.getString(5);
+					
+					ITEM_TYPE type = Item.translateType(result.getString(6));
+					
+					GENRE category = Item.translateGenre(result.getString(7));
 
-					String company = result.getString(Item.COMPANY_IND);
+					String company = result.getString(8);
 						
-					String year = result.getString(Item.YEAR_IND);
+					String year = result.getString(9);
 						
-					int price = (int)result.getDouble(Item.PRICE_IND) * 100;
+					int price = (int)result.getDouble(10) * 100;
 					
-					int stock = result.getInt(Item.STOCK_IND);
-						
+					int stock = result.getInt(11);
+					
+					if(qty > qty_bought)
+					//sanity check
+						throw new IOException("Input quantity to be returned" +
+											  " is larger than the quantity " +
+											  "bought.");
+					
 					//adding this item item to the cart and returns it
-					Item item = new Item(the_upc, title, type, category, company, 
-										 year, price, stock);
+					Item item = new PurchaseItem(receiptID, the_upc, qty_bought,
+												 title, type, category, company,
+												 year, price, stock);
 					items.put(item, new Integer(qty));
 					return item;
 				}
 				else
-				//item with the specified upc is not found
-					throw new SQLException("Item with upc " + upc + 
+				//purchase item with the specified upc and receipt id is not 
+				//found
+					throw new SQLException("Item with upc " + upc + " and " +
+											"Receipt ID " + this.purc.getRcptId() +  
 											"cannot be found.");
 			}
 			finally
