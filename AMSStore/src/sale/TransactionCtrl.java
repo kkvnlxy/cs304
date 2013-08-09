@@ -23,6 +23,7 @@ public abstract class TransactionCtrl
 	protected TransactionCtrl()
 	{
 		this.items = new HashMap<Item, Integer>();
+		this.upc_item_map = new HashMap<String, Item>();
 		this.grandtotal = 0;
 	}
 	
