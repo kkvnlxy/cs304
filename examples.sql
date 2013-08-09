@@ -130,7 +130,6 @@ insert into purchaseitem values ('P000000002', '0002', '2');
 insert into purchaseitem values ('P000000002', '0001', '1');
 -- ISP 1 item [come back to return in CC]
 insert into purchaseitem values ('P000000003', '0002', '5');
---insert into purchaseitem values ('P2', '0002', '5');
 -- OP 2 items tries to return 
 insert into purchaseitem values ('P000000005', '0003', '1');
 insert into purchaseitem values ('P000000005', '0009', '1');
