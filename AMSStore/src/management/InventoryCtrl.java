@@ -92,9 +92,6 @@ public class InventoryCtrl
 
 
 
-		System.out.println("price in cent: " + price_incent);//testing
-
-		System.out.println("price in doulb: " + (double)price_incent / 100.0);//testing
 
 
 
@@ -345,7 +342,6 @@ public class InventoryCtrl
 	 * @throws ClassNotFoundException 
 
 	 */
-
 	public DailyReport genDailyReport(GregorianCalendar date) 
 			throws SQLException, ClassNotFoundException, IOException
 	{
@@ -367,14 +363,6 @@ public class InventoryCtrl
 							 date.get(Calendar.MONTH) - 1, 
 							 date.get(Calendar.DAY_OF_MONTH));
 		stmt.setDate(1, temp);
-		
-		System.out.println(sql);//testing
-		System.out.println("sql.date:" + temp.getYear() + "-" + 
-										 temp.getMonth() + "-" + 
-										 temp.getDay());//testing
-		System.out.println("report date: " + date.get(Calendar.YEAR) + "-" + 
-							date.get(Calendar.MONTH) + "-" + 
-							date.get(Calendar.DAY_OF_MONTH));//testing
 		
 		try
 		{
@@ -441,68 +429,59 @@ public class InventoryCtrl
 
 	 */
 	public TopNReport genTopNReport(GregorianCalendar date, int top_n)
-
 			throws SQLException, ClassNotFoundException, IOException
-
-			{
-
+	{
 		if(this.conn == null)
-
 			this.conn = JDBCConnection.getConnection();
 
-		PreparedStatement stmt = conn.prepareStatement(
+		String sql =	"SELECT * \n" +
+						"FROM( \n" +
+						"      SELECT I.UPC, \n" +
+						"             I.title, \n" +
+						"             I.company, \n" +
+						"             I.stock, \n" +
+						"             SUM(PI.quantity) \n" +
+						"      FROM Purchase P, PurchaseItem PI, Item I \n" +
+						"      WHERE P.pDate = ? AND \n" +
+						"            P.receiptId = PI.receiptId AND \n" +
+						"            PI.quantity > 0 AND \n" +
+						"            I.UPC = PI.UPC \n" +
+						"      GROUP BY I.UPC, I.title, I.company, I.stock \n" +
+						"      ORDER BY SUM(PI.quantity) DESC) \n" +
+						"WHERE ROWNUM <= ? \n" +
+						"ORDER BY ROWNUM \n";
+				
+		PreparedStatement stmt = conn.prepareStatement(sql);
 
-				"SELECT *" +
-
-						"FROM( " +
-
-						"SELECT I.UPC, I.title, I.company, I.stock, SUM(PI.quantity) AS \"Total Units\"" +
-
-						"FROM Purchase P, PurchaseItem PI, Item I" +
-
-						"WHERE P.pDate = to_date( ? , 'dd-mm-yyyy') AND P.receiptId = PI.receiptId AND PI.quantity > 0 AND I.UPC = PI.UPC" +
-
-						"GROUP BY I.UPC, I.title, I.company, I.stock" +
-
-						"ORDER BY \"Total Units\" DESC)" +
-
-						"WHERE ROWNUM <= ? " +
-
-				"ORDER BY ROWNUM");
-
-
-
-		stmt.setDate(1, new Date(date.DATE));
-
+		stmt.setDate(1, new Date(date.get(Calendar.YEAR) - 1900, 
+								 date.get(Calendar.MONTH) - 1, 
+								 date.get(Calendar.DAY_OF_MONTH)));
 		stmt.setInt(2, top_n);
-
-
 
 		try
 
 		{
-
 			ResultSet result = stmt.executeQuery();
+			TopNReport report = new TopNReport();
 
-			if(!result.next())
-
-				throw new SQLException("Could Not Produce Report");
-
-			//TODO:
-
-			else return new TopNReport();
-
-		}
-
-		finally
-
-		{
-
-			stmt.close();
-
-		}
-
+			while(result.next())
+			{
+				String upc = result.getString(1);
+				String title = result.getString(2);
+				String comp = result.getString(3);
+				int stk = result.getInt(4);
+				int unit_sold = result.getInt(5);
+				
+				report.insertRow(upc, title, comp, stk, new Integer(unit_sold));
 			}
+			
+			return report;
+		}
+		finally
+		{
+			stmt.close();
+		}
+	}
 
 
 
