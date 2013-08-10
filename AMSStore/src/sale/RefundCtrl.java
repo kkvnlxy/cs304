@@ -218,8 +218,10 @@ public class RefundCtrl extends TransactionCtrl
 								"INSERT INTO Refund(rDate, receiptId) " +
 								"VALUES (?, ?)", 
 								new String[] {"retid"});
-				stmt.setDate(1, new Date(Calendar.getInstance().
-															getTimeInMillis()));
+				Calendar today = Calendar.getInstance();
+				stmt.setDate(1, new Date(today.get(Calendar.YEAR) - 1900,
+										 today.get(Calendar.MONTH) - 1,
+										 today.get(Calendar.DAY_OF_MONTH)));
 				stmt.setString(2, purc.getRcptId());
 				int count = stmt.executeUpdate();
 				if(count != 1)

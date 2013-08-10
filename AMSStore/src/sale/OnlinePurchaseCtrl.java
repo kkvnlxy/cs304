@@ -53,7 +53,10 @@ public class OnlinePurchaseCtrl extends TransactionCtrl
 					"VALUES (?, ?, ?, ?, ?)",
 					//tells the stmt object the auto-gen key attribute
 					new String[]{"receiptId"});
-			stmt.setDate(1, new Date(Calendar.getInstance().getTimeInMillis()));
+			Calendar today = Calendar.getInstance();
+			stmt.setDate(1, new Date(today.get(Calendar.YEAR) - 1900,
+									 today.get(Calendar.MONTH) - 1,
+									 today.get(Calendar.DAY_OF_MONTH)));
 			stmt.setString(2, cur_cust.getCustomerID());
 			stmt.setString(3, card_num);
 			stmt.setDate(4, new Date(exp_date.getTimeInMillis()));

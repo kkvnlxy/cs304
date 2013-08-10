@@ -51,8 +51,10 @@ public class StorePurchaseCtrl extends TransactionCtrl
 							"VALUES (?)",
 							//receiptId is auto-generated attribute
 							new String[]{"receiptId"});
-				stmt.setDate(1, new Date(Calendar.getInstance().
-															getTimeInMillis()));
+				Calendar today = Calendar.getInstance();
+				stmt.setDate(1, new Date(today.get(Calendar.YEAR) - 1900,
+										 today.get(Calendar.MONTH) - 1,
+										 today.get(Calendar.DAY_OF_MONTH)));
 			}
 			else
 			//credit card purchase
