@@ -1,5 +1,6 @@
 package sale;
 
+import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 /**
@@ -106,7 +107,9 @@ public class Purchase extends Receipt
 	}
 	final public String getExprDateString()
 	{
-		return this.EXPR_DATE.toString();
+		return "" + this.EXPR_DATE.get(Calendar.YEAR) + "-" + 
+					this.EXPR_DATE.get(Calendar.MONTH) + "-" +
+					this.EXPR_DATE.get(Calendar.DAY_OF_MONTH);
 	}
 	final public GregorianCalendar getExptDate()
 	{
@@ -114,7 +117,9 @@ public class Purchase extends Receipt
 	}
 	final public String getExptDateString()
 	{
-		return this.EXPT_DATE.toString();
+		return "" + this.EXPT_DATE.get(Calendar.YEAR) + "-" + 
+					this.EXPT_DATE.get(Calendar.MONTH) + "-" +
+					this.EXPT_DATE.get(Calendar.DAY_OF_MONTH);
 	}
 	final public GregorianCalendar getDelDate()
 	{
@@ -122,7 +127,9 @@ public class Purchase extends Receipt
 	}
 	final public String getDelDateString()
 	{
-		return this.DEL_DATE.toString();
+		return "" + this.DEL_DATE.get(Calendar.YEAR) + "-" + 
+					this.DEL_DATE.get(Calendar.MONTH) + "-" +
+					this.DEL_DATE.get(Calendar.DAY_OF_MONTH);
 	}
 	final public PAYMENT_METHOD getPaymentMethod()
 	{
