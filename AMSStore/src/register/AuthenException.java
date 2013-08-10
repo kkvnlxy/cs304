@@ -9,6 +9,11 @@ package register;
  */
 public class AuthenException extends Exception 
 {
+	public AuthenException(String msg)
+	{
+		super(msg);
+	}
+	
 	/**
 	 * Ecplise-generated
 	 */

@@ -67,7 +67,7 @@ public class AuthenCtrl
 				//passwords matches
 					return new Customer(cid, name, adr, phone);
 				else
-					throw new AuthenException();
+					throw new AuthenException("Authentication failed.");
 			}
 			else
 				throw new SQLException("Customer ID cannot be found in the " +

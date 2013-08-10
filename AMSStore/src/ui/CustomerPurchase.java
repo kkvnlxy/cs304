@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import javax.swing.JLabel;
 
@@ -43,8 +44,11 @@ public class CustomerPurchase extends JDialog {
 	private JTextField textField_1;
 	private JTextField textField_4;
 	private JTextField textField_5;
+	private JTextField textField_6;//qty in search tap
 	
-	private register.Customer current_cust;
+	private register.Customer current_cust;//DON'T forget: when finished check 
+										   //out, erase the current_cust to null
+	private ArrayList<sale.Item> search_result;//same as above
 	
 	/**
 	 * Launch the application.
@@ -106,7 +110,7 @@ public class CustomerPurchase extends JDialog {
 				JButton btnLogin = new JButton("Login");
 				btnLogin.addMouseListener(new MouseAdapter() 
 				{
-					//kevin: 
+					//kevin0: 
 					//DON'T forget: when finished check out, erase the 
 					//current_cust to null
 					@Override
@@ -163,9 +167,10 @@ public class CustomerPurchase extends JDialog {
 				lblTitle.setBounds(93, 146, 120, 16);
 				Search.add(lblTitle);
 				
-				JComboBox cbCategory = new JComboBox();
+				//kevin1:
+				final JComboBox<String> cbCategory = new JComboBox<String>();//cross out <String>?
 				cbCategory.setToolTipText("");
-				cbCategory.setModel(new DefaultComboBoxModel(new String[] {"Choose a category", "ROCK", "POP", "RAP", "COUNTRY", "CLASSICAL", "NEW_AGE", "INTRUMENTAL"}));
+				cbCategory.setModel(new DefaultComboBoxModel<String>(new String[] {"Choose a category", "ROCK", "POP", "RAP", "COUNTRY", "CLASSICAL", "NEW_AGE", "INTRUMENTAL"}));
 				cbCategory.setBounds(220, 105, 270, 27);
 				Search.add(cbCategory);
 				
@@ -173,19 +178,75 @@ public class CustomerPurchase extends JDialog {
 				lblLeadingSinger.setBounds(93, 183, 120, 16);
 				Search.add(lblLeadingSinger);
 				
-				textField = new JTextField();
+				textField = new JTextField();//singer
 				textField.setBounds(220, 181, 270, 20);
 				Search.add(textField);
 				textField.setColumns(10);
 				
-				JButton btnSearch = new JButton("Search");
-				btnSearch.setBounds(483, 299, 90, 29);
-				Search.add(btnSearch);
-				
-				textField_3 = new JTextField();
+				textField_3 = new JTextField();//title
 				textField_3.setColumns(10);
 				textField_3.setBounds(220, 144, 270, 20);
 				Search.add(textField_3);
+				
+				JLabel qty_lab = DefaultComponentFactory.getInstance().createLabel("Quantity");
+				qty_lab.setBounds(93, 220, 120, 16);
+				Search.add(qty_lab);
+				textField_6 = new JTextField();//qty
+				textField_6.setColumns(4);
+				textField_6.setBounds(220, 218, 270, 20);
+				Search.add(textField_6);
+				
+				JButton btnSearch = new JButton("Search");
+				btnSearch.setBounds(483, 299, 90, 29);
+				Search.add(btnSearch);
+				btnSearch.addMouseListener(new MouseAdapter(){
+					public void mouseClicked(MouseEvent arg0) 
+					{
+						sale.SearchCtrl searcher = new sale.SearchCtrl();
+						String cate = (String)(cbCategory.getSelectedItem());
+						cate = cate.equals("Choose a category") ? "" : cate;
+						String title = textField.getText() != null ? textField.getText() : "";
+						String singer = textField_3.getText() != null ? textField_3.getText() : "";
+						int qty = textField_6.getText() != null ? 
+									Integer.parseInt(textField_6.getText()) : 1;
+						System.out.println(cate + "\t" + title + "\t" + singer + "\t" + qty);//testing
+						
+						try
+						{
+							search_result = new ArrayList<sale.Item>();
+							if(!cate.equals("") && !title.equals("") && 
+							   !singer.equals(""))
+								search_result = searcher.searchAll(title, cate, 
+												 				   singer, qty);
+							//the following control flow will always search for 
+							//category if presented, then title if presented, 
+							//last singer
+							else if(!cate.equals(""))
+								search_result = searcher.searchByCategory(cate, qty);
+							else if(!title.equals(""))
+								search_result = searcher.searchByTitle(title, qty);
+							else if(!singer.equals(""))
+								search_result = searcher.searchBySinger(singer, qty);
+						}
+						catch(FileNotFoundException expt)
+						{
+							// TODO Exception/Error pop-up window insert here
+						}
+						catch(IOException expt)
+						{
+							// TODO Exception/Error pop-up window insert here
+						}
+						catch(SQLException expt)
+						{
+							// TODO Exception/Error pop-up window insert here
+						} 
+						catch (ClassNotFoundException expt) 
+						{
+							// TODO Exception/Error pop-up window insert here
+						}
+					}
+				});
+				//end of kevin1
 			}
 			
 			JPanel Results = new JPanel();

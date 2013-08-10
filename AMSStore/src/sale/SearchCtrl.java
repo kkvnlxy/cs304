@@ -25,7 +25,7 @@ public class SearchCtrl
 		
 		String sql = "SELECT * " +
 					 "FROM Item " +
-					 "WHERE category = ?";
+					 "WHERE category IN ?";
 		PreparedStatement stmt = null;
 		try
 		{
@@ -47,7 +47,7 @@ public class SearchCtrl
 				int price = (int)result.getDouble(Item.PRICE_IND) * 100;
 				int stk = result.getInt(Item.STOCK_IND);
 				
-				if(qty >= stk)
+				if(qty <= stk)
 					items.add(new Item(upc, title, type, genre, comp, year, 
 									   price, stk));
 			}
@@ -67,7 +67,7 @@ public class SearchCtrl
 		
 		String sql = "SELECT * " +
 					 "FROM Item " +
-					 "WHERE title = ?";
+					 "WHERE title IN ?";
 		PreparedStatement stmt = null;
 		try
 		{
@@ -89,7 +89,7 @@ public class SearchCtrl
 				int price = (int)result.getDouble(Item.PRICE_IND) * 100;
 				int stk = result.getInt(Item.STOCK_IND);
 				
-				if(qty >= stk)
+				if(qty <= stk)
 					items.add(new Item(upc, title, type, genre, comp, year, 
 									   price, stk));
 			}
@@ -110,7 +110,7 @@ public class SearchCtrl
 		String sql = "SELECT i.upc, i.title, i.type, i.category, i.company, " +
 							"i.year, i.price, i.stock " +
 					 "FROM  Item i, LeadSinger l " +
-					 "WHERE i.upc = l.upc AND l.name = ?";
+					 "WHERE i.upc = l.upc AND l.name IN ?";
 		PreparedStatement stmt = null;
 		try
 		{
@@ -132,7 +132,7 @@ public class SearchCtrl
 				int price = (int)result.getDouble(Item.PRICE_IND) * 100;
 				int stk = result.getInt(Item.STOCK_IND);
 				
-				if(qty >= stk)
+				if(qty <= stk)
 					items.add(new Item(upc, title, type, genre, comp, year, 
 									   price, stk));
 			}
@@ -155,9 +155,9 @@ public class SearchCtrl
 							"i.year, i.price, i.stock " +
 					 "FROM  Item i, LeadSinger l " +
 					 "WHERE i.upc = l.upc AND " +
-					 	   "l.name = ? AND " +
-					 	   "i.title = ? AND " +
-					 	   "i.category = ?";
+					 	   "l.name IN ? AND " +
+					 	   "i.title IN ? AND " +
+					 	   "i.category IN ?";
 		PreparedStatement stmt = null;
 		try
 		{
@@ -181,7 +181,7 @@ public class SearchCtrl
 				int price = (int)result.getDouble(Item.PRICE_IND) * 100;
 				int stk = result.getInt(Item.STOCK_IND);
 				
-				if(qty >= stk)
+				if(qty <= stk)
 					items.add(new Item(upc, title, type, genre, comp, year, 
 									   price, stk));
 			}

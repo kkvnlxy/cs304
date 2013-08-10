@@ -1,4 +1,5 @@
 package sale;
+import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 /**
@@ -28,7 +29,9 @@ public class Receipt
 	}
 	final public String getPDateString()
 	{
-		return TRANS_DATE.toString();
+		return "" + this.TRANS_DATE.get(Calendar.YEAR) + "-" + 
+					this.TRANS_DATE.get(Calendar.MONTH) + "-" +
+					this.TRANS_DATE.get(Calendar.DAY_OF_MONTH);
 	}
 	final public GregorianCalendar getPDate()
 	{
