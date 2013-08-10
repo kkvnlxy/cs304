@@ -30,7 +30,7 @@ public class Receipt
 	final public String getPDateString()
 	{
 		return "" + this.TRANS_DATE.get(Calendar.YEAR) + "-" + 
-					this.TRANS_DATE.get(Calendar.MONTH) + "-" +
+					(this.TRANS_DATE.get(Calendar.MONTH) + 1) + "-" +
 					this.TRANS_DATE.get(Calendar.DAY_OF_MONTH);
 	}
 	final public GregorianCalendar getPDate()
