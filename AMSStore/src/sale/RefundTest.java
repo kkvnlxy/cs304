@@ -34,10 +34,14 @@ public class RefundTest
 				//returned object not caught
 				ctrl.addItem(args[row], Integer.parseInt(args[row + 1]));
 			
-			Receipt rcpt = ctrl.process(credit, 
-										new GregorianCalendar(Integer.parseInt(year), 
-															  Integer.parseInt(month), 
-															  1));
+			Receipt rcpt = null;
+			if(!credit.equals(""))
+				rcpt = ctrl.process(credit, 
+									new GregorianCalendar(Integer.parseInt(year) + 2000, 
+														  Integer.parseInt(month), 
+														  1));
+			else
+				rcpt = ctrl.process("", null);
 			
 			if(rcpt != null)
 				System.out.println(rcpt.getRcptId());

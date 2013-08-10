@@ -51,9 +51,9 @@ public class StorePurchaseCtrl extends TransactionCtrl
 							"VALUES (?)",
 							//receiptId is auto-generated attribute
 							new String[]{"receiptId"});
-				Calendar today = Calendar.getInstance();
+				GregorianCalendar today = new GregorianCalendar();
 				stmt.setDate(1, new Date(today.get(Calendar.YEAR) - 1900,
-										 today.get(Calendar.MONTH) - 1,
+										 today.get(Calendar.MONTH),
 										 today.get(Calendar.DAY_OF_MONTH)));
 			}
 			else
@@ -64,10 +64,14 @@ public class StorePurchaseCtrl extends TransactionCtrl
 							"VALUES (?, ?, ?)",
 							//receiptId is auto-generated attribute
 							new String[]{"receiptId"});
-				stmt.setDate(1, new Date(Calendar.getInstance().
-															getTimeInMillis()));
+				GregorianCalendar today = new GregorianCalendar();
+				stmt.setDate(1, new Date(today.get(Calendar.YEAR) - 1900,
+										 today.get(Calendar.MONTH),
+										 today.get(Calendar.DAY_OF_MONTH)));
 				stmt.setString(2, card_num);
-				stmt.setDate(3, new Date(exp_date.getTimeInMillis()));
+				stmt.setDate(3, new Date(exp_date.get(Calendar.YEAR) - 1900,
+										 exp_date.get(Calendar.MONTH) - 1,
+										 exp_date.get(Calendar.DAY_OF_MONTH)));
 			}
 			int count = stmt.executeUpdate();
 			if(count != 1)

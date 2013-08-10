@@ -55,12 +55,16 @@ public class OnlinePurchaseCtrl extends TransactionCtrl
 					new String[]{"receiptId"});
 			Calendar today = Calendar.getInstance();
 			stmt.setDate(1, new Date(today.get(Calendar.YEAR) - 1900,
-									 today.get(Calendar.MONTH) - 1,
+									 today.get(Calendar.MONTH),
 									 today.get(Calendar.DAY_OF_MONTH)));
 			stmt.setString(2, cur_cust.getCustomerID());
 			stmt.setString(3, card_num);
-			stmt.setDate(4, new Date(exp_date.getTimeInMillis()));
-			stmt.setDate(5, new Date(expt_date.getTimeInMillis()));
+			stmt.setDate(4, new Date(exp_date.get(Calendar.YEAR) - 1900,
+									 exp_date.get(Calendar.MONTH) - 1,
+									 exp_date.get(Calendar.DAY_OF_MONTH)));
+			stmt.setDate(5, new Date(expt_date.get(Calendar.YEAR) - 1900,
+									 expt_date.get(Calendar.MONTH), //-1?
+									 expt_date.get(Calendar.DAY_OF_MONTH)));
 			int count = stmt.executeUpdate();
 			if(count != 1)
 			//sanity check

@@ -198,12 +198,12 @@ public class RefundCtrl extends TransactionCtrl
 			   (!purc.getCardNum().equals(card_num) ||
 				purc.getExprDate().getTimeInMillis() != exp_date.getTimeInMillis()))
 			{
-				System.out.println("DB   :" + purc.getExprDate().get(Calendar.YEAR) + "-" + 
-						purc.getExprDate().get(Calendar.MONTH) + "-"+ 
-						purc.getExprDate().get(Calendar.DAY_OF_MONTH));//testing
-				System.out.println("GIVEN: " + exp_date.get(Calendar.YEAR) + "-" + 
-						exp_date.get(Calendar.MONTH) + "-"+ 
-						exp_date.get(Calendar.DAY_OF_MONTH));//testing
+//				System.out.println("DB   :" + purc.getExprDate().get(Calendar.YEAR) + "-" + 
+//						purc.getExprDate().get(Calendar.MONTH) + "-"+ 
+//						purc.getExprDate().get(Calendar.DAY_OF_MONTH));//testing
+//				System.out.println("GIVEN: " + exp_date.get(Calendar.YEAR) + "-" + 
+//						exp_date.get(Calendar.MONTH) + "-"+ 
+//						exp_date.get(Calendar.DAY_OF_MONTH));//testing
 				
 				return null;
 			}
@@ -218,9 +218,9 @@ public class RefundCtrl extends TransactionCtrl
 								"INSERT INTO Refund(rDate, receiptId) " +
 								"VALUES (?, ?)", 
 								new String[] {"retid"});
-				Calendar today = Calendar.getInstance();
+				GregorianCalendar today = new GregorianCalendar();
 				stmt.setDate(1, new Date(today.get(Calendar.YEAR) - 1900,
-										 today.get(Calendar.MONTH) - 1,
+										 today.get(Calendar.MONTH),
 										 today.get(Calendar.DAY_OF_MONTH)));
 				stmt.setString(2, purc.getRcptId());
 				int count = stmt.executeUpdate();
@@ -286,9 +286,9 @@ public class RefundCtrl extends TransactionCtrl
 		Calendar deadline = this.purc.getPDate();
 		deadline.add(Calendar.DATE, MAX_RETURN_DAYS);
 		
-		System.out.println("deadline: " + deadline.get(Calendar.YEAR) + "-" + 
-							deadline.get(Calendar.MONTH) + "-"+ 
-							deadline.get(Calendar.DAY_OF_MONTH));//testing
+//		System.out.println("deadline: " + deadline.get(Calendar.YEAR) + "-" + 
+//							deadline.get(Calendar.MONTH) + "-"+ 
+//							deadline.get(Calendar.DAY_OF_MONTH));//testing
 		
 		boolean temp = deadline.compareTo(Calendar.getInstance()) >= 0;
 		this.status = temp;

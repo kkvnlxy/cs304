@@ -27,7 +27,7 @@ public class OnlinePurchaseTest
 			ctrl.addItem(args[row], Integer.parseInt(args[row + 1]));
 		
 		Receipt recpt = ctrl.process("1234567890123456", 
-									 new GregorianCalendar(2013, 7, 31));
+									 new GregorianCalendar(2018, 7, 01));
 		System.out.println(recpt.getRcptId());
 		ctrl.cancel();
 	}

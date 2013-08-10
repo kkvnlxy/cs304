@@ -2,6 +2,7 @@ package sale;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.GregorianCalendar;
 
 public class StorePurchaseTest 
 {
@@ -24,6 +25,7 @@ public class StorePurchaseTest
 			ctrl.addItem(args[row], Integer.parseInt(args[row + 1]));
 		}
 		
+//		Receipt receipt = ctrl.process("1111111111111111", new GregorianCalendar(2015, 8, 1));
 		Receipt receipt = ctrl.process("", null);
 		System.out.println(receipt.getRcptId());
 		ctrl.cancel();
