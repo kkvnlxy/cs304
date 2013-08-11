@@ -17,6 +17,7 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -54,21 +55,21 @@ public class CustomerPurchase extends JDialog {
 	//Results
 	private JPanel Results;
 	private JPanel Resultspanel;
-	private ArrayList<onlineItemsGUI> resultItems;
 	private int RVCounter = 15;
 
 	//Cart
-	private ArrayList<onlineItemsGUI> cartItems;
+	private JPanel CartPane;
+	private ArrayList<Item> cart_Items;
 	private int CVCounter = 15;
 
 	//Checkout
+	private JPanel BillPanle;
 	private JTextField COMonth;
 	private JTextField COCardNo;
 	private JTextField COYear;
-	
+
 	private sale.OnlinePurchaseCtrl op_ctrl;
-
-
+	
 	/**
 	 * Launch the application.
 	 */
@@ -88,6 +89,9 @@ public class CustomerPurchase extends JDialog {
 	public CustomerPurchase() {
 		//fields
 		search_result = new ArrayList<Item>();
+		// = new ArrayList<onlineItemsGUI>();
+		cart_Items = new ArrayList<Item>();
+
 
 		//GUI
 		setBackground(Color.PINK);
@@ -224,7 +228,7 @@ public class CustomerPurchase extends JDialog {
 				JLabel qty_lab = DefaultComponentFactory.getInstance().createLabel("Quantity");
 				qty_lab.setBounds(93, 220, 120, 16);
 				Search.add(qty_lab);
-				SIQty = new JTextField();//qty
+				SIQty = new JTextField();
 				SIQty.setColumns(4);
 				SIQty.setBounds(220, 218, 270, 20);
 				Search.add(SIQty);
@@ -252,8 +256,8 @@ public class CustomerPurchase extends JDialog {
 						sale.SearchCtrl searcher = new sale.SearchCtrl();
 						String cate = (String) SICat.getSelectedItem();
 						cate = cate.equals("Choose a category") ? "" : cate;
-						String title = SISinger.getText() != null ? SISinger.getText() : "";
-						String singer = SITitle.getText() != null ? SITitle.getText() : "";
+						String singer = SISinger.getText() != null ? SISinger.getText() : "";
+						String title = SITitle.getText() != null ? SITitle.getText() : "";
 						int qty = SIQty.getText() != null ? 
 								Integer.parseInt(SIQty.getText()) : 1;
 								System.out.println(cate + "\t" + title + "\t" + singer + "\t" + qty);//testing
@@ -318,10 +322,8 @@ public class CustomerPurchase extends JDialog {
 										for(int i = 0; i < cp.search_result.size(); i++){
 											RVCounter += 25;
 											Item item_nxt = search_result.get(i);
-											onlineItemsGUI current_item = new onlineItemsGUI(item_nxt, RVCounter);
-											resultItems.add(current_item);
+											onlineItemsGUI current_item = new onlineItemsGUI(item_nxt, RVCounter, true);
 										}
-										search_result.clear();
 										tabbedPane.setSelectedIndex(2);
 									}
 								}
@@ -360,11 +362,44 @@ public class CustomerPurchase extends JDialog {
 			btnAddSelectedItems.addMouseListener(new MouseAdapter() {
 				@Override
 				public void mouseClicked(MouseEvent e) {
+					CartPane.removeAll();
+					CVCounter = 15;
+					
+					JLabel CUPC = DefaultComponentFactory.getInstance().createTitle("UPC");
+					CUPC.setBounds(10, 16, 47, 16);
+					CartPane.add(CUPC);
+
+					JLabel CTITLE = DefaultComponentFactory.getInstance().createTitle("Title");
+					CTITLE.setBounds(60, 16, 178, 16);
+					CartPane.add(CTITLE);
+
+					JLabel CTYPE = DefaultComponentFactory.getInstance().createTitle("Type");
+					CTYPE.setBounds(242, 16, 48, 16);
+					CartPane.add(CTYPE);
+
+					JLabel CCAT = DefaultComponentFactory.getInstance().createTitle("Category");
+					CCAT.setBounds(292, 16, 76, 16);
+					CartPane.add(CCAT);
+
+					JLabel CPRICE = DefaultComponentFactory.getInstance().createTitle("Price");
+					CPRICE.setBounds(368, 16, 40, 16);
+					CartPane.add(CPRICE);
+
+					JLabel CQTY = DefaultComponentFactory.getInstance().createTitle("Qty");
+					CQTY.setBounds(413, 16, 46, 16);
+					CartPane.add(CQTY);
+					
+					for(int i = 0; i < cp.cart_Items.size(); i++){
+						CVCounter += 25;
+						Item item_nxt = cart_Items.get(i);
+						onlineItemsGUI current_item = new onlineItemsGUI(item_nxt, CVCounter, false);
+					}
 					tabbedPane.setSelectedIndex(3);
 				}
 			});
 			btnAddSelectedItems.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
+					
 				}
 			});
 			btnAddSelectedItems.setBounds(472, 299, 101, 29);
@@ -375,37 +410,9 @@ public class CustomerPurchase extends JDialog {
 				@Override
 				public void mouseClicked(MouseEvent arg0) {
 					Resultspanel.removeAll();
+					search_result.clear();
 					RVCounter = 15;
 					tabbedPane.setSelectedIndex(1);
-
-					JLabel lblType = DefaultComponentFactory.getInstance().createTitle("Type");
-					lblType.setBounds(215, 11, 56, 23);
-					Resultspanel.add(lblType);
-
-					JLabel lblUpc_1 = DefaultComponentFactory.getInstance().createTitle("UPC");
-					lblUpc_1.setBounds(10, 11, 33, 23);
-					Resultspanel.add(lblUpc_1);
-
-					JLabel lblTitle_1 = DefaultComponentFactory.getInstance().createTitle("Title");
-					lblTitle_1.setBounds(55, 11, 149, 23);
-					Resultspanel.add(lblTitle_1);
-
-					JLabel lblCategory_2 = DefaultComponentFactory.getInstance().createTitle("Category");
-					lblCategory_2.setBounds(288, 11, 67, 23);
-					Resultspanel.add(lblCategory_2);
-
-					JLabel lblPrice_1 = DefaultComponentFactory.getInstance().createTitle("Price");
-					lblPrice_1.setBounds(367, 11, 46, 23);
-					Resultspanel.add(lblPrice_1);
-
-					JLabel lblStock = DefaultComponentFactory.getInstance().createTitle("Stock");
-					lblStock.setBounds(421, 11, 46, 23);
-					Resultspanel.add(lblStock);
-
-					JLabel lblQty_1 = DefaultComponentFactory.getInstance().createTitle("Qty");
-					lblQty_1.setBounds(469, 11, 46, 23);
-					Resultspanel.add(lblQty_1);
-
 				}
 			});
 			btnGotosearch.addActionListener(new ActionListener() {
@@ -425,74 +432,26 @@ public class CustomerPurchase extends JDialog {
 			Cart.setLayout(null);
 
 			JButton btnRemoveSelectedItems = new JButton("CheckOut");
+			btnRemoveSelectedItems.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+				}
+			});
+			btnRemoveSelectedItems.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseClicked(MouseEvent e) {
+					//TODO: add the cart_items to ctrl object and then change over to checkout page
+					
+					tabbedPane.setSelectedIndex(4);
+				}
+			});
 			btnRemoveSelectedItems.setBounds(454, 299, 114, 29);
 			Cart.add(btnRemoveSelectedItems);
 
-			JPanel CartPane = new JPanel();
+			CartPane = new JPanel();
 			CartPane.setLayout(null);
 			CartPane.setBackground(Color.WHITE);
 			CartPane.setBounds(10, 38, 558, 250);
 			Cart.add(CartPane);
-
-			JButton RemoveFromCart = new JButton("Remove");
-			RemoveFromCart.setBounds(463, 30, 89, 25);
-			CartPane.add(RemoveFromCart);
-
-			JLabel UPC1 = new JLabel("UPC1");
-			UPC1.setBounds(10, 36, 47, 18);
-			CartPane.add(UPC1);
-
-			JLabel TITLE1 = new JLabel("TITLE1");
-			TITLE1.setBounds(60, 36, 178, 18);
-			CartPane.add(TITLE1);
-
-			JLabel CUPC = DefaultComponentFactory.getInstance().createTitle("UPC");
-			CUPC.setBounds(10, 16, 47, 16);
-			CartPane.add(CUPC);
-
-			JLabel CTITLE = DefaultComponentFactory.getInstance().createTitle("Title");
-			CTITLE.setBounds(60, 16, 178, 16);
-			CartPane.add(CTITLE);
-
-			JLabel CTYPE = DefaultComponentFactory.getInstance().createTitle("Type");
-			CTYPE.setBounds(242, 16, 48, 16);
-			CartPane.add(CTYPE);
-
-			JLabel CCAT = DefaultComponentFactory.getInstance().createTitle("Category");
-			CCAT.setBounds(292, 16, 76, 16);
-			CartPane.add(CCAT);
-
-			JLabel CPRICE = DefaultComponentFactory.getInstance().createTitle("Price");
-			CPRICE.setBounds(368, 16, 40, 16);
-			CartPane.add(CPRICE);
-
-			JLabel CQTY = DefaultComponentFactory.getInstance().createTitle("Qty");
-			CQTY.setBounds(413, 16, 46, 16);
-			CartPane.add(CQTY);
-
-			JLabel TYPE1 = new JLabel("TYPE1");
-			TYPE1.setBounds(242, 40, 48, 14);
-			CartPane.add(TYPE1);
-
-			JLabel CAT1 = new JLabel("CAT1");
-			CAT1.setBounds(292, 40, 76, 14);
-			CartPane.add(CAT1);
-
-			JLabel PRICE1 = new JLabel("PRICE1");
-			PRICE1.setBounds(368, 40, 40, 14);
-			CartPane.add(PRICE1);
-
-			JLabel QTY1 = new JLabel("QTY1");
-			QTY1.setBounds(413, 40, 46, 14);
-			CartPane.add(QTY1);
-
-			JButton btnSearchpage = new JButton("ResultsPage");
-			btnSearchpage.setBounds(161, 207, 114, 29);
-			Cart.add(btnSearchpage);
-
-			JButton btnResultspage = new JButton("SearchPage");
-			btnResultspage.setBounds(21, 207, 114, 29);
-			Cart.add(btnResultspage);
 
 			JLabel lblShoppingCart = DefaultComponentFactory.getInstance().createTitle("Shopping Cart:");
 			lblShoppingCart.setBounds(50, 15, 122, 16);
@@ -519,7 +478,7 @@ public class CustomerPurchase extends JDialog {
 			lblExpirationDate.setBounds(344, 107, 120, 16);
 			CheckOut.add(lblExpirationDate);
 
-			JPanel BillPanle = new JPanel();
+			BillPanle = new JPanel();
 			BillPanle.setBounds(17, 34, 299, 249);
 			CheckOut.add(BillPanle);
 			BillPanle.setLayout(null);
@@ -631,7 +590,6 @@ public class CustomerPurchase extends JDialog {
 			panel.add(button);
 
 			JButton button_1 = new JButton("Cancel");
-			button_1.setActionCommand("Cancel");
 			//housekeeping button:
 			button_1.addMouseListener(new MouseAdapter()
 				{
@@ -643,6 +601,7 @@ public class CustomerPurchase extends JDialog {
 						current_cust = null;
 					}
 				});
+			button_1.setActionCommand("Cancel");
 			panel.add(button_1);
 
 			COYear = new JTextField();
@@ -802,13 +761,15 @@ public class CustomerPurchase extends JDialog {
 			stmt.close();
 		}
 			}
-	
+
 	//TODO
-	
-	public class onlineItemsGUI {
+
+	public class onlineItemsGUI extends JFrame{
 		protected Item GUIitem;
 		protected int counterInit;
-		
+		protected onlineItemsGUI oiGUI = this; 
+		protected boolean truefalse;
+
 		//GUI elements
 		private JTextField RQty_IN;
 		private JLabel RTITLE;
@@ -818,70 +779,109 @@ public class CustomerPurchase extends JDialog {
 		private JLabel RPRICE;
 		private JLabel RSTOCK;
 		private JButton btnAddToCart;
-		
-		protected onlineItemsGUI(Item i, int counterStart){
+
+		protected onlineItemsGUI(Item i, int counterStart, boolean tf){
 			this.GUIitem = i; 
 			this.counterInit = counterStart;
-			
-			RTITLE = new JLabel(GUIitem.getTitle());
-			RTITLE.setBounds(55, counterInit, 149, 29);
-			Resultspanel.add(RTITLE);
+			this.truefalse = tf;
 
-			RUPC = new JLabel(GUIitem.getUPC());
-			RUPC.setBounds(10, counterInit, 33, 29);
-			Resultspanel.add(RUPC);
+			//if true, then it's a results page item
+			if(tf){
+				RTITLE = new JLabel(GUIitem.getTitle());
+				RTITLE.setBounds(55, counterInit, 149, 29);
+				Resultspanel.add(RTITLE);
 
-			RTYPE = new JLabel("" + GUIitem.getType());
-			RTYPE.setBounds(215, counterInit, 61, 29);
-			Resultspanel.add(RTYPE);
+				RUPC = new JLabel(GUIitem.getUPC());
+				RUPC.setBounds(10, counterInit, 33, 29);
+				Resultspanel.add(RUPC);
 
-			RCAT = new JLabel("" + GUIitem.getCategory());
-			RCAT.setBounds(288, counterInit, 67, 29);
-			Resultspanel.add(RCAT);
+				RTYPE = new JLabel("" + GUIitem.getType());
+				RTYPE.setBounds(215, counterInit, 61, 29);
+				Resultspanel.add(RTYPE);
 
-			RPRICE = DefaultComponentFactory.getInstance().createLabel("" + GUIitem.getPrice());
-			RPRICE.setBounds(367, counterInit, 46, 29);
-			Resultspanel.add(RPRICE);
+				RCAT = new JLabel("" + GUIitem.getCategory());
+				RCAT.setBounds(288, counterInit, 67, 29);
+				Resultspanel.add(RCAT);
 
-			RSTOCK = new JLabel("" + GUIitem.getSTOCK());
-			RSTOCK.setBounds(421, counterInit, 33, 29);
-			Resultspanel.add(RSTOCK);
+				RPRICE = DefaultComponentFactory.getInstance().createLabel("" + GUIitem.getPrice());
+				RPRICE.setBounds(367, counterInit, 46, 29);
+				Resultspanel.add(RPRICE);
 
-			RQty_IN = new JTextField();
-			RQty_IN.setBounds(466, counterInit, 33, 29);
-			Resultspanel.add(RQty_IN);
-			RQty_IN.setColumns(10);
-			
-			
-			}
-		
-		//search_result parsing out
-		
-			/*
+				RSTOCK = new JLabel("" + GUIitem.getSTOCK());
+				RSTOCK.setBounds(421, counterInit, 33, 29);
+				Resultspanel.add(RSTOCK);
 
-			//TODO: 
-			//check qty field if it's less than stock then allow to add to cart
-			// if not ask customer to accept quantity of stock [popup]
-											
-			JButton btnAddToCart = new JButton("Add");
-			btnAddToCart.addMouseListener(new MouseAdapter() {
-				//TODO: hold the item that it's associated with as a local variable? 
-				
-				@Override
-				public void mouseClicked(MouseEvent e) {
-					int qty_in = Integer.parseInt(RQty_IN.getText());
-					
-					if (qty_in >= GUIitem.getSTOCK()){
-						resultItems.add(new Item(GUIitem.getUPC(), GUIitem.getTitle(), GUIitem.getType(), GUIitem.getCategory(),
-							GUIitem.getCompany(), GUIitem.getYear(), GUIitem.getPriceInCents(), GUIitem.getSTOCK()));
-					System.out.println("no. of items in cart currently: " + resultItems.size());
-					}else{
-						System.out.println("asking for too much! </3");
+				RQty_IN = new JTextField();
+				RQty_IN.setBounds(466, counterInit, 33, 29);
+				Resultspanel.add(RQty_IN);
+				RQty_IN.setColumns(10);
+
+				JButton btnAddToCart = new JButton("Add");
+				btnAddToCart.addMouseListener(new MouseAdapter() {
+					@Override
+					public void mouseClicked(MouseEvent e) {
+						int qty_in = Integer.parseInt(RQty_IN.getText());
+
+						if (qty_in <= GUIitem.getSTOCK()){
+							cart_Items.add(oiGUI.getGUIitem());
+							//TODO: op_ctrl insert
+							try 
+							{
+								op_ctrl.addItem(oiGUI.getGUIitem().getUPC(), qty_in);
+							} 
+							catch (Exception e1) 
+							{
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							}
+						}else{
+							JOptionPane.showMessageDialog(null, "Error occurred: Please enter a lower qty", "ERROR", JOptionPane.ERROR_MESSAGE);
+						}
+						
+						CartPane.updateUI();
 					}
-				}
-			});
-			btnAddToCart.setBounds(501, RVCounter, 56, 29);
-			Resultspanel.add(btnAddToCart);
-		}*/
+				});
+				btnAddToCart.setBounds(501, RVCounter, 56, 29);
+				Resultspanel.add(btnAddToCart);
+			}
+
+			//else if tf is false, then it's a carts page item
+			else{
+
+				RUPC = new JLabel(GUIitem.getUPC());
+				RUPC.setBounds(10, counterInit, 47, 18);
+				CartPane.add(RUPC);
+
+				RTITLE = new JLabel(GUIitem.getTitle());
+				RTITLE.setBounds(60, counterInit, 178, 18);
+				CartPane.add(RTITLE);
+
+				RTYPE = new JLabel("" + GUIitem.getType());
+				RTYPE.setBounds(242, counterInit, 48, 14);
+				CartPane.add(RTYPE);
+
+				RCAT = new JLabel("" + GUIitem.getCategory());
+				RCAT.setBounds(292, counterInit, 76, 14);
+				CartPane.add(RCAT);
+
+				RPRICE = new JLabel("" + GUIitem.getPrice());
+				RPRICE.setBounds(368, counterInit, 40, 14);
+				CartPane.add(RPRICE);
+
+				RSTOCK = new JLabel("" + GUIitem.getSTOCK());
+				RSTOCK.setBounds(413, counterInit, 46, 14);
+				CartPane.add(RSTOCK);
+			}
+		}
+
+		/**
+		 * @return the gUIitem
+		 */
+		public Item getGUIitem() {
+			return new Item(GUIitem.getUPC(), GUIitem.getTitle(), GUIitem.getType(), GUIitem.getCategory(), GUIitem.getCompany(), GUIitem.getYear(), GUIitem.getPriceInCents(),
+					//items that are added to cart, the stock field is actually the quantity selected by customer
+					Integer.parseInt(RQty_IN.getText()));
+		}
+
 	}
 }
