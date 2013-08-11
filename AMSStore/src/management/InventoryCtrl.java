@@ -367,12 +367,17 @@ public class InventoryCtrl
 		try
 		{
 			ResultSet result = stmt.executeQuery();
-
 			ArrayList<Triple<String, ArrayList<ReportItem>, Double>>
 				tuples = new ArrayList<Triple<String, ArrayList<ReportItem>, Double>>();
-			ArrayList<ReportItem> lst = new ArrayList<ReportItem>();
-			String current_cat = "";
-			while(result.next())
+
+			if(!result.next())
+			//if empty resultset, return empty report
+				return new DailyReport(tuples);
+			
+			//3 Passes:
+			//1st: Store everything on the list
+			ArrayList<ReportItem> raw_list = new ArrayList<ReportItem>();
+			do
 			{
 				String upc = result.getString(1);
 				String cat = result.getString(2);
@@ -381,24 +386,58 @@ public class InventoryCtrl
 				double total_$ = result.getDouble(5);
 
 				ReportItem item = new ReportItem(upc, cat, price_$, qty_sold, total_$);
-				lst.add(item);
-				
-				if(!cat.equals(current_cat))
-				//different category group
+				raw_list.add(item);	
+			}while(result.next());
+			
+			//2nd: combine any duplicate item
+			ArrayList<ReportItem> lst_no_dup = new ArrayList<ReportItem>();
+			for(int row = 0; row < raw_list.size(); row++)
+			{
+				String current_upc = raw_list.get(row).getUPC();
+				int unit_sold = raw_list.get(row).getUnits();
+				double item_total = raw_list.get(row).getTotalSale();
+				for(int fol_row = row + 1; 
+					fol_row < raw_list.size() && 
+							raw_list.get(fol_row).getUPC().equals(current_upc); 
+					fol_row++)
 				{
-					current_cat = new String(cat);
-					
-					double cat_total = 0;
-					for(int row = 0; row < lst.size(); row++)
-						cat_total += lst.get(row).getTotalSale();
-					
-					Triple<String, ArrayList<ReportItem>, Double>
-						a_tuple = new Triple<String, ArrayList<ReportItem>, Double>
-										(current_cat, lst, new Double(cat_total));
-					tuples.add(a_tuple);
-					
-					lst = new ArrayList<ReportItem>();//clean up the current lst
+					unit_sold += raw_list.get(fol_row).getUnits();
+					item_total += raw_list.get(fol_row).getTotalSale();
+					row = fol_row;
 				}
+				ReportItem itm = new ReportItem(raw_list.get(row).getUPC(),
+												raw_list.get(row).getCategory(),
+												raw_list.get(row).getUnitPrices(),
+												unit_sold, item_total);
+				lst_no_dup.add(itm);
+			}
+			
+			//3rd: accounting for each category
+			for(int row = 0; row < lst_no_dup.size(); row++)
+			{
+				String current_cat = lst_no_dup.get(row).getCategory();
+				double cat_total = lst_no_dup.get(row).getTotalSale();
+				int start_ind = row;
+				int end_ind = row;
+				for(int fol_row = row + 1; 
+					fol_row < lst_no_dup.size() && 
+					lst_no_dup.get(fol_row).getCategory().equals(current_cat);
+					fol_row++)
+				{
+					cat_total += lst_no_dup.get(fol_row).getTotalSale();
+					row = fol_row;
+					end_ind++;
+				}
+				
+				//make a sublist:
+				ArrayList<ReportItem> sublist = new ArrayList<ReportItem>();
+				for(int col = start_ind; col <= end_ind; col++)
+					sublist.add(lst_no_dup.get(col));
+				
+				Triple<String, ArrayList<ReportItem>, Double>
+				a_tuple = new Triple<String, ArrayList<ReportItem>, Double>
+								(current_cat, sublist, new Double(cat_total));
+				tuples.add(a_tuple);
 			}
 			
 			return new DailyReport(tuples);

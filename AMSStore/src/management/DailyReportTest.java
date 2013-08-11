@@ -26,6 +26,7 @@ public class DailyReportTest
 								new GregorianCalendar(Integer.parseInt(args[0]),
 													  Integer.parseInt(args[1]),
 													  Integer.parseInt(args[2])));
+		System.out.println("helloworld");
 		
 		for(int row = 0; row < report.getNumOfCat(); row++)
 		{
