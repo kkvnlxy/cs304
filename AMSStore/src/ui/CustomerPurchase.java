@@ -63,13 +63,18 @@ public class CustomerPurchase extends JDialog {
 	private int CVCounter = 15;
 
 	//Checkout
+	private JPanel CheckOut;
 	private JPanel BillPanle;
 	private JTextField COMonth;
 	private JTextField COCardNo;
 	private JTextField COYear;
+	private String CO_Month = "";
+	private String CO_CardNo = "";
+	private String CO_Year = "";
+	private int COVcounter = 14;
 
 	private sale.OnlinePurchaseCtrl op_ctrl;
-	
+
 	/**
 	 * Launch the application.
 	 */
@@ -164,28 +169,23 @@ public class CustomerPurchase extends JDialog {
 						}
 						catch(register.AuthenException expt)
 						{
-							// TODO Exception/Error pop-up window insert here
-							System.out.println("error1");
+							JOptionPane.showMessageDialog(null, expt.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
 						}
 						catch(FileNotFoundException expt)
 						{
-							System.out.println("error2");
-							// TODO Exception/Error pop-up window insert here
+							JOptionPane.showMessageDialog(null, expt.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
 						}
 						catch(IOException expt)
 						{
-							System.out.println("error3");
-							// TODO Exception/Error pop-up window insert here
+							JOptionPane.showMessageDialog(null, expt.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
 						}
 						catch(SQLException expt)
 						{
-							System.out.println("error4");
-							// TODO Exception/Error pop-up window insert here
+							JOptionPane.showMessageDialog(null, expt.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
 						} 
 						catch (ClassNotFoundException expt) 
 						{
-							System.out.println("error5");
-							// TODO Exception/Error pop-up window insert here
+							JOptionPane.showMessageDialog(null, expt.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
 						}
 					}
 				});
@@ -245,6 +245,69 @@ public class CustomerPurchase extends JDialog {
 				Resultspanel.setBounds(10, 38, 558, 250);
 				Results.add(Resultspanel);
 
+				JPanel Cart = new JPanel();
+				Cart.setBackground(Color.PINK);
+				tabbedPane.addTab("Cart", null, Cart, null);
+				Cart.setLayout(null);
+
+				JButton btnRemoveSelectedItems = new JButton("CheckOut");
+				btnRemoveSelectedItems.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent arg0) {
+					}
+				});
+				btnRemoveSelectedItems.addMouseListener(new MouseAdapter() {
+					@Override
+					public void mouseClicked(MouseEvent e) {
+						//TODO: add the cart_items to ctrl object and then change over to checkout page
+
+						for(int i = 0; i < cp.cart_Items.size(); i++){
+							COVcounter += 25;
+							Item item_nxt = cart_Items.get(i);
+
+							JLabel COUPC1 = new JLabel(item_nxt.getUPC());
+							COUPC1.setBounds(128, COVcounter, 50, 14);
+							BillPanle.add(COUPC1);
+
+							JLabel COTITLE1 = new JLabel(item_nxt.getTitle());
+							COTITLE1.setBounds(16, COVcounter, 102, 14);
+							BillPanle.add(COTITLE1);
+
+							JLabel COPRICE1 = new JLabel("" + item_nxt.getPrice());
+							COPRICE1.setBounds(226, COVcounter, 65, 14);
+							BillPanle.add(COPRICE1);
+
+//							JLabel COQTY1 = new JLabel("" + item_nxt.getSTOCK());
+							JLabel COQTY1 = new JLabel("" + item_nxt.setStock());
+							COQTY1.setBounds(183, COVcounter, 39, 16);
+							BillPanle.add(COQTY1);
+						}
+
+						tabbedPane.setSelectedIndex(4);
+					}
+				});
+				btnRemoveSelectedItems.setBounds(454, 299, 114, 29);
+				Cart.add(btnRemoveSelectedItems);
+
+				CartPane = new JPanel();
+				CartPane.setLayout(null);
+				CartPane.setBackground(Color.WHITE);
+				CartPane.setBounds(10, 38, 558, 250);
+				Cart.add(CartPane);
+
+				JLabel lblShoppingCart = DefaultComponentFactory.getInstance().createTitle("Shopping Cart:");
+				lblShoppingCart.setBounds(10, 11, 122, 16);
+				Cart.add(lblShoppingCart);
+
+				CheckOut = new JPanel();
+				CheckOut.setBackground(Color.PINK);
+				tabbedPane.addTab("CheckOut", null, CheckOut, null);
+				CheckOut.setLayout(null);
+
+				BillPanle = new JPanel();
+				BillPanle.setBounds(17, 34, 299, 249);
+				CheckOut.add(BillPanle);
+				BillPanle.setLayout(null);
+
 				JButton btnSearch = new JButton("Search");
 				btnSearch.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent arg0) {
@@ -256,9 +319,9 @@ public class CustomerPurchase extends JDialog {
 						sale.SearchCtrl searcher = new sale.SearchCtrl();
 						String cate = (String) SICat.getSelectedItem();
 						cate = cate.equals("Choose a category") ? "" : cate;
-						String singer = SISinger.getText() != null ? SISinger.getText() : "";
-						String title = SITitle.getText() != null ? SITitle.getText() : "";
-						int qty = SIQty.getText() != null ? 
+						String singer = !SISinger.getText().equals("") ? SISinger.getText() : "";
+						String title = !SITitle.getText().equals("") ? SITitle.getText() : "";
+						int qty = !SIQty.getText().equals("") ? 
 								Integer.parseInt(SIQty.getText()) : 1;
 								System.out.println(cate + "\t" + title + "\t" + singer + "\t" + qty);//testing
 
@@ -329,23 +392,19 @@ public class CustomerPurchase extends JDialog {
 								}
 								catch(FileNotFoundException expt)
 								{
-									System.out.println("error1");
-									// TODO Exception/Error pop-up window insert here
+									JOptionPane.showMessageDialog(null, expt.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
 								}
 								catch(IOException expt)
 								{
-									System.out.println("error2");
-									// TODO Exception/Error pop-up window insert here
+									JOptionPane.showMessageDialog(null, expt.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
 								}
 								catch(SQLException expt)
 								{
-									System.out.println("error3");
-									// TODO Exception/Error pop-up window insert here
+									JOptionPane.showMessageDialog(null, expt.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
 								} 
 								catch (ClassNotFoundException expt) 
 								{
-									System.out.println("error4");
-									// TODO Exception/Error pop-up window insert here
+									JOptionPane.showMessageDialog(null, expt.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
 								}
 					}
 				});
@@ -364,7 +423,7 @@ public class CustomerPurchase extends JDialog {
 				public void mouseClicked(MouseEvent e) {
 					CartPane.removeAll();
 					CVCounter = 15;
-					
+
 					JLabel CUPC = DefaultComponentFactory.getInstance().createTitle("UPC");
 					CUPC.setBounds(10, 16, 47, 16);
 					CartPane.add(CUPC);
@@ -388,7 +447,7 @@ public class CustomerPurchase extends JDialog {
 					JLabel CQTY = DefaultComponentFactory.getInstance().createTitle("Qty");
 					CQTY.setBounds(413, 16, 46, 16);
 					CartPane.add(CQTY);
-					
+
 					for(int i = 0; i < cp.cart_Items.size(); i++){
 						CVCounter += 25;
 						Item item_nxt = cart_Items.get(i);
@@ -399,7 +458,7 @@ public class CustomerPurchase extends JDialog {
 			});
 			btnAddSelectedItems.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					
+
 				}
 			});
 			btnAddSelectedItems.setBounds(472, 299, 101, 29);
@@ -426,42 +485,6 @@ public class CustomerPurchase extends JDialog {
 			lblSearchResults.setBounds(10, 15, 122, 16);
 			Results.add(lblSearchResults);
 
-			JPanel Cart = new JPanel();
-			Cart.setBackground(Color.PINK);
-			tabbedPane.addTab("Cart", null, Cart, null);
-			Cart.setLayout(null);
-
-			JButton btnRemoveSelectedItems = new JButton("CheckOut");
-			btnRemoveSelectedItems.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent arg0) {
-				}
-			});
-			btnRemoveSelectedItems.addMouseListener(new MouseAdapter() {
-				@Override
-				public void mouseClicked(MouseEvent e) {
-					//TODO: add the cart_items to ctrl object and then change over to checkout page
-					
-					tabbedPane.setSelectedIndex(4);
-				}
-			});
-			btnRemoveSelectedItems.setBounds(454, 299, 114, 29);
-			Cart.add(btnRemoveSelectedItems);
-
-			CartPane = new JPanel();
-			CartPane.setLayout(null);
-			CartPane.setBackground(Color.WHITE);
-			CartPane.setBounds(10, 38, 558, 250);
-			Cart.add(CartPane);
-
-			JLabel lblShoppingCart = DefaultComponentFactory.getInstance().createTitle("Shopping Cart:");
-			lblShoppingCart.setBounds(50, 15, 122, 16);
-			Cart.add(lblShoppingCart);
-
-			JPanel CheckOut = new JPanel();
-			CheckOut.setBackground(Color.PINK);
-			tabbedPane.addTab("CheckOut", null, CheckOut, null);
-			CheckOut.setLayout(null);
-
 			JLabel lblBill = DefaultComponentFactory.getInstance().createTitle("Bill:");
 			lblBill.setBounds(18, 17, 122, 16);
 			CheckOut.add(lblBill);
@@ -476,24 +499,7 @@ public class CustomerPurchase extends JDialog {
 
 			JLabel lblExpirationDate = DefaultComponentFactory.getInstance().createLabel("Expiration Date:");
 			lblExpirationDate.setBounds(344, 107, 120, 16);
-			CheckOut.add(lblExpirationDate);
-
-			BillPanle = new JPanel();
-			BillPanle.setBounds(17, 34, 299, 249);
-			CheckOut.add(BillPanle);
-			BillPanle.setLayout(null);
-
-			JLabel COUPC1 = new JLabel("UPC1");
-			COUPC1.setBounds(128, 39, 50, 14);
-			BillPanle.add(COUPC1);
-
-			JLabel COTITLE1 = new JLabel("TITLE1");
-			COTITLE1.setBounds(16, 39, 102, 14);
-			BillPanle.add(COTITLE1);
-
-			JLabel COPRICE1 = new JLabel("PRICE1");
-			COPRICE1.setBounds(226, 39, 65, 14);
-			BillPanle.add(COPRICE1);
+			CheckOut.add(lblExpirationDate);			
 
 			JLabel lblTitle0 = DefaultComponentFactory.getInstance().createTitle("Title");
 			lblTitle0.setBounds(16, 16, 102, 16);
@@ -511,10 +517,6 @@ public class CustomerPurchase extends JDialog {
 			lblPrice.setBounds(226, 16, 65, 16);
 			BillPanle.add(lblPrice);
 
-			JLabel COQTY1 = new JLabel("QTY1");
-			COQTY1.setBounds(183, 38, 39, 16);
-			BillPanle.add(COQTY1);
-
 			COMonth = new JTextField();
 			COMonth.setColumns(10);
 			COMonth.setBounds(378, 130, 59, 22);
@@ -525,11 +527,42 @@ public class CustomerPurchase extends JDialog {
 			COCardNo.setBounds(367, 74, 182, 22);
 			CheckOut.add(COCardNo);
 
+			COYear = new JTextField();
+			COYear.setBounds(492, 130, 59, 22);
+			CheckOut.add(COYear);
+			COYear.setColumns(10);
+
+			//TODO implement clear button
 			JButton btnClear = new JButton("Clear");
+			btnClear.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseClicked(MouseEvent arg0) {
+					COCardNo.setText("");
+					COMonth.setText("");
+					COYear.setText("");
+					CheckOut.updateUI();
+				}
+			});
 			btnClear.setBounds(389, 177, 73, 29);
 			CheckOut.add(btnClear);
 
+			//TODO implement Authroize button 
 			JButton btnAuthorize = new JButton("Authorize");
+			btnAuthorize.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseClicked(MouseEvent e) {
+
+					String cardno_in = COCardNo.getText();
+					String month_in = COMonth.getText();
+					String year_in = COYear.getText();
+					if(!(cardno_in.equals("") || month_in.equals("") || year_in.equals(""))){
+						cp.CO_CardNo = cardno_in;
+						cp.CO_Month = month_in;
+						cp.CO_Year = year_in;
+					}
+
+				}
+			});
 			btnAuthorize.setBounds(456, 177, 93, 29);
 			CheckOut.add(btnAuthorize);
 
@@ -540,74 +573,95 @@ public class CustomerPurchase extends JDialog {
 			panel.setLayout(new FlowLayout(FlowLayout.RIGHT));
 
 			JButton button = new JButton("ConfirmPurchase");
+//			button.addActionListener(new ActionListener() {
+//				public void actionPerformed(ActionEvent arg0) {
+//				}
+//			});
 			button.setActionCommand("ConfirmPurchase");
 			button.addMouseListener(new MouseAdapter()
+			{
+				@Override
+				public void mouseClicked(MouseEvent arg0) 
 				{
-					@Override
-					public void mouseClicked(MouseEvent arg0) 
-					{
-						if(op_ctrl == null)
+					if(op_ctrl == null)
 						//sanity check
-							throw new RuntimeException("Ctrl not yet instantiate, forget to login?");
-					
-						String card_num = COCardNo.getText() == null ? "" : COCardNo.getText();
-						int expr_yy = card_num.equals("") ? 0 : 2000 + Integer.parseInt(COYear.getText());
-						int expr_mm = card_num.equals("") ? 0 : Integer.parseInt(COMonth.getText());
-						
-						try
-						{
-							sale.Purchase receipt = (sale.Purchase)op_ctrl.process(card_num, 
-																					new GregorianCalendar(expr_yy, expr_mm, 1));
+						throw new RuntimeException("Ctrl not yet instantiate, forget to login?");
 
-							op_ctrl.cancel();//housekeeping
-							current_cust = null;//housekeeping
-							
-							//TODO further printing with the receipt adhere:
-							
-						}
-						catch(FileNotFoundException expt)
-						{
-							// TODO Auto-generated catch block
-							expt.printStackTrace();
-						} 
-						catch (IOException expt) 
-						{
-							// TODO Auto-generated catch block
-							expt.printStackTrace();
-						}
-						catch (ClassNotFoundException expt) 
-						{
-							// TODO Auto-generated catch block
-							expt.printStackTrace();
-						} 
-						catch (SQLException expt) 
-						{
-							// TODO Auto-generated catch block
-							expt.printStackTrace();
-						} 
+					String card_num = COCardNo.getText().equals("") ? "" : COCardNo.getText();
+					int expr_yy = card_num.equals("") ? 0 : 2000 + Integer.parseInt(COYear.getText());
+					int expr_mm = card_num.equals("") ? 0 : Integer.parseInt(COMonth.getText());
+
+					try
+					{
+						sale.Purchase receipt = (sale.Purchase)op_ctrl.process(card_num, 
+								new GregorianCalendar(expr_yy, expr_mm, 1));
+
+						op_ctrl.cancel();//housekeeping
+						current_cust = null;//housekeeping
+
+						String message = "Your order " + receipt.getRcptId() + " will be arrived on " + receipt.getExptDateString();
+						JOptionPane.showMessageDialog(null, message, "Receipt: " + receipt.getRcptId(), JOptionPane. 	INFORMATION_MESSAGE);
 					}
-				});
+					catch(FileNotFoundException expt)
+					{
+						JOptionPane.showMessageDialog(null, expt.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
+					} 
+					catch (IOException expt) 
+					{
+						JOptionPane.showMessageDialog(null, expt.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
+					}
+					catch (ClassNotFoundException expt) 
+					{
+						JOptionPane.showMessageDialog(null, expt.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
+					} 
+					catch (SQLException expt) 
+					{
+						JOptionPane.showMessageDialog(null, expt.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
+					} 
+				}
+			});
 			panel.add(button);
 
 			JButton button_1 = new JButton("Cancel");
+			button_1.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+				}
+			});
 			//housekeeping button:
 			button_1.addMouseListener(new MouseAdapter()
+			{
+				@Override
+				public void mouseClicked(MouseEvent arg0)
 				{
-					@Override
-					public void mouseClicked(MouseEvent arg0)
-					{
-						if(op_ctrl != null)
-							op_ctrl.cancel();
-						current_cust = null;
-					}
-				});
+					if(op_ctrl != null)
+						op_ctrl.cancel();
+					current_cust = null;
+					
+					BillPanle.removeAll();
+					
+					JLabel lblTitle0 = DefaultComponentFactory.getInstance().createTitle("Title");
+					lblTitle0.setBounds(16, 16, 102, 16);
+					BillPanle.add(lblTitle0);
+
+					JLabel lblUPC = DefaultComponentFactory.getInstance().createTitle("UPC");
+					lblUPC.setBounds(128, 16, 50, 16);
+					BillPanle.add(lblUPC);
+
+					JLabel lblQty = DefaultComponentFactory.getInstance().createTitle("Qty");
+					lblQty.setBounds(183, 16, 39, 16);
+					BillPanle.add(lblQty);
+
+					JLabel lblPrice = DefaultComponentFactory.getInstance().createTitle("Price");
+					lblPrice.setBounds(226, 16, 65, 16);
+					BillPanle.add(lblPrice);
+					
+					BillPanle.updateUI();
+					
+					tabbedPane.setSelectedIndex(1);					
+				}
+			});
 			button_1.setActionCommand("Cancel");
 			panel.add(button_1);
-
-			COYear = new JTextField();
-			COYear.setBounds(492, 130, 59, 22);
-			CheckOut.add(COYear);
-			COYear.setColumns(10);
 
 			JLabel lblMm = DefaultComponentFactory.getInstance().createLabel("MM");
 			lblMm.setBounds(346, 133, 41, 16);
@@ -807,7 +861,8 @@ public class CustomerPurchase extends JDialog {
 				RPRICE.setBounds(367, counterInit, 46, 29);
 				Resultspanel.add(RPRICE);
 
-				RSTOCK = new JLabel("" + GUIitem.getSTOCK());
+//				RSTOCK = new JLabel("" + GUIitem.getSTOCK());
+				RSTOCK = new JLabel("" + GUIitem.setStock());
 				RSTOCK.setBounds(421, counterInit, 33, 29);
 				Resultspanel.add(RSTOCK);
 
@@ -822,22 +877,22 @@ public class CustomerPurchase extends JDialog {
 					public void mouseClicked(MouseEvent e) {
 						int qty_in = Integer.parseInt(RQty_IN.getText());
 
-						if (qty_in <= GUIitem.getSTOCK()){
+//						if (qty_in <= GUIitem.getSTOCK()){
+						if(qty_in <= GUIitem.setStock()){
 							cart_Items.add(oiGUI.getGUIitem());
 							//TODO: op_ctrl insert
 							try 
 							{
 								op_ctrl.addItem(oiGUI.getGUIitem().getUPC(), qty_in);
 							} 
-							catch (Exception e1) 
+							catch (Exception expt) 
 							{
-								// TODO Auto-generated catch block
-								e1.printStackTrace();
+								JOptionPane.showMessageDialog(null, expt.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
 							}
 						}else{
 							JOptionPane.showMessageDialog(null, "Error occurred: Please enter a lower qty", "ERROR", JOptionPane.ERROR_MESSAGE);
 						}
-						
+
 						CartPane.updateUI();
 					}
 				});
@@ -868,7 +923,8 @@ public class CustomerPurchase extends JDialog {
 				RPRICE.setBounds(368, counterInit, 40, 14);
 				CartPane.add(RPRICE);
 
-				RSTOCK = new JLabel("" + GUIitem.getSTOCK());
+//				RSTOCK = new JLabel("" + GUIitem.getSTOCK());
+				RSTOCK = new JLabel("" + GUIitem.setStock());
 				RSTOCK.setBounds(413, counterInit, 46, 14);
 				CartPane.add(RSTOCK);
 			}
